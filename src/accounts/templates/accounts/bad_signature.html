@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+    Activation failed
+{% endblock %}
+{% block header %}
+    Activation failed.
+{% endblock %}
+
+{% block content %}
+    <p>Some trouble here :( .Maybe you have entered not right link,
+         <a href="{% url 'accounts:activation_again' %}">click here to send new </a>following link</p>
+{% endblock %}

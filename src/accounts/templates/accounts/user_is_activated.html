@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    User already activated
+{% endblock %}
+
+{% block header %}
+    User already activated.
+{% endblock %}
+
+{% block content %}
+    <p>You have previously activated your account.</p>
+    <p><a href="{% url 'accounts:login' %}">Please login.</a></p>
+{% endblock %}

@@ -1,0 +1,9 @@
+Dear user {{ user.username }}!
+
+You have registered on the Quiz website (knowledge test).
+You need to activate your account to verify your identity.
+To do this, use the following link:
+{{ host }}{% url 'accounts:register_activate' sign=sign %}
+
+See you!
+Sincerely, the administration of the site "Quiz".

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+    User profile
+{% endblock %}
+
+{% block header %}
+    {{ user.username }} profile.
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col">
+            <div class="row">
+                <div class="col-6 text-center">
+                    <img class="rounded-circle p-1 m-1" width="200" height="200" src="{{ user.avatar.url }}"
+                         alt="avatar">
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <label for="username" class="col-4"><strong>Username:</strong></label>
+                        <div class="col-8">
+                            <p id="username">{{ user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="email" class="col-4"><strong>E-Mail:</strong></label>
+                        <div class="col-8">
+                            <p id="email">{{ user.email }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-6">
+                    <label for="firstname" class="col-4"><strong>First name:</strong></label>
+                    <div class="col-8">
+                        <p id="firstname">{{ user.first_name }}</p>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="lastname" class="col-4"><strong>Last name:</strong></label>
+                    <div class="col-8">
+                        <p id="lastname">{{ user.last_name }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-6">
+                    <label for="birthday" class="col-4"><strong>Birthday:</strong></label>
+                    <div class="col-8">
+                        <p id="birthday">{% if user.birthday %}{{ user.birthday }}{% endif %}</p>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="city" class="col-4"><strong>City:</strong></label>
+                    <div class="col-8">
+                        <p id="city">{% if user.city %}{{ user.city }}{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4 text-center">
+                <div class="col">
+                    <a class="btn btn-outline-primary" href="{% url 'accounts:profile_update' %}">Change profile</a>
+                    <a class="btn btn-outline-primary" href="{% url 'password_change' %}">Change password</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+{% endblock %}

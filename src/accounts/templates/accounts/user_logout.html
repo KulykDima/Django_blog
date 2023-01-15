@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Logout user
+{% endblock %}
+
+{% block header %}
+    You have successfully logged out of the site.
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col text-center">
+            <a href="{% url 'index' %}" class="btn btn-outline-success">Home</a>
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline-success">Login</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-outline-success">Register</a>
+        </div>
+        <div class="col-3"></div>
+    </div>
+{% endblock %}
