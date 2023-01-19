@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
     Posts list
 {% endblock %}
@@ -16,8 +18,7 @@
                     <th>№</th>
                     <th>Title</th>
                     <th>Author</th>
-                    <th>Likes</th>
-                    <th>Dislikes</th>
+                    <th align="center">Like/Dislike</th>
                     <th>Read the post</th>
                 </tr>
             </thead>
@@ -27,9 +28,31 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ post.title }}</td>
                     <td>{{ post.author }}</td>
-                    <td>{{ post.like.count }}</td>
-                    <td>{{ post.dislike.count }}</td>
-{#                    <td><a href="{% url 'quiz:details' uuid=exam.uuid %}">Details</a></td>#}
+                    <td>   <form method="post" action="{% url 'posts:like' post.pk %}">
+              {% csrf_token %}
+              <div >
+                  <input type="hidden" name="text" value="{{ request.path }}">
+                  <button style="background: transparent; border: none; box-shadow: none;" type="submit" data-filter-title="Like">
+                      <img src="{% static 'images/like.png' %}">
+                      <span>{{ post.like.all.count }}</span>
+                  </button>
+              </div>
+
+          </form>
+
+
+           <form method="post" action="{% url 'posts:dislike' post.pk %}">
+              {% csrf_token %}
+              <div >
+                  <input type="hidden" name="text" value="{{ request.path }}">
+                  <button style="background: transparent; border: none; box-shadow: none;" type="submit">
+                     <img src="{% static 'images/dislike.png' %}">
+                      <span>{{ post.dislike.all.count }}</span>
+                  </button>
+              </div>
+           </form></td>
+                    <td><a class="btn btn-outline-primary m-2"
+                           href="{% url 'posts:detail' uuid=post.uuid %}">Details</a></td>
                 </tr>
             {% endfor %}
             </tbody>

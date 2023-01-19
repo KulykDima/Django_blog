@@ -12,6 +12,7 @@ class Posts(models.Model):
     text = models.TextField(max_length=1000)
     like = models.ManyToManyField(User, blank=True, related_name='likes')
     dislike = models.ManyToManyField(User, blank=True, related_name='dislikes')
+    create_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title
