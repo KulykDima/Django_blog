@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Details of exam
+{% endblock %}
+
+{% block header %}
+    {{ posts.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Description</td>
+                            <td>{{ posts.title }}</td>
+                        </tr>
+                        <tr>
+                            <td>Text</td>
+                            <td>{{ posts.text }}</td>
+                        </tr>
+                        <tr>
+                            <td>Post Author</td>
+                            <td>{{ posts.author }}</td>
+                        </tr>
+                        <tr>
+                            <td>Likes</td>
+                            <td>{{ posts.like.count}}</td>
+                        </tr>
+                        <tr>
+                            <td>Dislikes</td>
+                            <td>{{ posts.dislike.count }}</td>
+                        </tr>
+                        <tr>
+                            <td>Post created</td>
+                            <td>{{ posts.create_date|date:'d-M-Y' }}</td>
+                        </tr>
+                    </tbody>
+              </table>
+            </div>
+        </div>
+{#        <div class="row">#}
+{#            <form method="post" class="d-flex justify-content-center mt-1 mb-2"#}
+{#                  action="{% url 'posts:update' posts.uuid %}">#}
+{#                {% csrf_token %}#}
+                <input class="btn btn-outline-success m-2" type="submit" value="Update">
+                <a class="btn btn-outline-primary m-2" href="{% url 'posts:list' %}">Back to posts list</a>
+            </form>
+        </div>
+{% endblock %}
