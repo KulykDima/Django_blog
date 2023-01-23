@@ -42,10 +42,10 @@
               </table>
             </div>
         </div>
-{#        <div class="row">#}
-{#            <form method="post" class="d-flex justify-content-center mt-1 mb-2"#}
-{#                  action="{% url 'posts:update' posts.uuid %}">#}
-{#                {% csrf_token %}#}
+        <div class="row">
+            <form method="get" class="d-flex justify-content-center mt-1 mb-2"
+                  action="{% url 'posts:update' posts.uuid %}">
+                {% csrf_token %}
                 <input class="btn btn-outline-success m-2" type="submit" value="Update">
                 <a class="btn btn-outline-primary m-2" href="{% url 'posts:list' %}">Back to posts list</a>
             </form>
