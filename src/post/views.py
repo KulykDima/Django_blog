@@ -6,8 +6,11 @@ from django.views import View
 from django.views.generic import CreateView
 from django.views.generic import DetailView
 from django.views.generic import ListView
+from django.views.generic import UpdateView
+
 
 from post.forms import CreatePostForm
+from post.forms import UpdatePostForm
 from post.models import Posts
 
 
@@ -93,3 +96,29 @@ class AddDislike(LoginRequiredMixin, View):
             post.dislike.remove(request.user)
 
         return HttpResponseRedirect(reverse('posts:list'))
+
+
+class PostUpdate(LoginRequiredMixin, UpdateView):
+    model = Posts
+    form_class = UpdatePostForm
+    template_name = 'update_post.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return self.model.objects.get(uuid=uuid)
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
+
+    def get_success_url(self):
+        uuid = self.kwargs.get('uuid')
+
+        return (
+            reverse(
+                'posts:detail',
+                kwargs={
+                    'uuid': uuid,
+                }
+            )
+        )

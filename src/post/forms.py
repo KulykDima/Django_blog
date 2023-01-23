@@ -12,3 +12,12 @@ class CreatePostForm(forms.ModelForm):
             'author',
             'text',
         ]
+
+
+class UpdatePostForm(forms.ModelForm):
+    class Meta:
+        model = Posts
+        fields = [
+            'title',
+            'text',
+        ]
