@@ -14,7 +14,8 @@ app_name = 'accounts'
 urlpatterns = [
     path('register/activate/<str:sign>/', user_activate, name='register_activate'),
     path('register/activate_again/', send_activation_letter, name='activation_again'),
-    path('register/done/', TemplateView.as_view(template_name='accounts/user_register_done.html'), name='register_done'),
+    path('register/done/', TemplateView.as_view(template_name='accounts/user_register_done.html'),
+         name='register_done'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
     path('profile/', user_profile_view, name='profile'),

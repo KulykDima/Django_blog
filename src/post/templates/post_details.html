@@ -27,12 +27,12 @@
                             <td>{{ posts.author }}</td>
                         </tr>
                         <tr>
-                            <td>Likes</td>
-                            <td>{{ posts.like.count}}</td>
+                            <td>Likers</td>
+                            <td><h5 title="{% for user in likeusers %} {{ user.username }}, {% endfor %}">{{ posts.like.count }}</h5></td>
                         </tr>
                         <tr>
-                            <td>Dislikes</td>
-                            <td>{{ posts.dislike.count }}</td>
+                            <td>Dislikers</td>
+                            <td><h5 title="{% for users in dislikeusers %}{{ users.username }}, {% endfor %}">{{ posts.dislike.count }}</h5></td>
                         </tr>
                         <tr>
                             <td>Post created</td>

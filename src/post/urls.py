@@ -3,8 +3,8 @@ from django.urls import path
 from post.views import AddDislike
 from post.views import AddLike
 from post.views import CreatePost
-from post.views import PostUpdate
 from post.views import PostDetail
+from post.views import PostUpdate
 from post.views import PostsList
 
 app_name = 'posts'

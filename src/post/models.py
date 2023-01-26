@@ -1,8 +1,8 @@
 from uuid import uuid4
 
-from django.db import models
-
 from accounts.models import User
+
+from django.db import models
 
 
 class Posts(models.Model):
