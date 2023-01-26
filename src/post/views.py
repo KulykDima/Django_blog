@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import render     # noqa
+from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
 from django.views.generic import DetailView
@@ -10,6 +10,7 @@ from django.views.generic import UpdateView
 
 
 from post.forms import CreatePostForm
+from post.forms import PostsFilterSet
 from post.forms import UpdatePostForm
 from post.models import Posts
 
@@ -17,6 +18,12 @@ from post.models import Posts
 class PostsList(ListView):
     model = Posts
     template_name = 'list_of_posts.html'
+
+    def get_queryset(self):
+        posts = Posts.objects.all()
+        filter_form = PostsFilterSet(data=self.request.GET, queryset=posts)
+
+        return filter_form
 
 
 class CreatePost(LoginRequiredMixin, CreateView):
@@ -34,6 +41,13 @@ class PostDetail(DetailView):
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('uuid')
         return self.model.objects.get(uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(object_list=self.get_queryset(), **kwargs)
+        context['likeusers'] = self.get_object().like.prefetch_related('likes__like')
+        context['dislikeusers'] = self.get_object().dislike.prefetch_related('dislikes__dislike')
+        print(context)
+        return context
 
 
 class AddLike(LoginRequiredMixin, View):
