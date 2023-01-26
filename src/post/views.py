@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render     # noqa
+from django.shortcuts import render  # noqa
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
