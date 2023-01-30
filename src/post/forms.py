@@ -6,6 +6,7 @@ from django.db import models
 
 from django_filters import FilterSet
 
+from .models import Comment
 from .models import Posts
 
 
@@ -40,3 +41,11 @@ class PostsFilterSet(FilterSet):
                 },
             },
         }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = (
+            'body',
+        )

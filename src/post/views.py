@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render  # noqa
+from django.shortcuts import render, get_object_or_404  # noqa
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
@@ -9,7 +9,7 @@ from django.views.generic import ListView
 from django.views.generic import UpdateView
 
 
-from post.forms import CreatePostForm
+from post.forms import CreatePostForm, CommentForm
 from post.forms import PostsFilterSet
 from post.forms import UpdatePostForm
 from post.models import Posts
@@ -46,8 +46,27 @@ class PostDetail(DetailView):
         context = super().get_context_data(object_list=self.get_queryset(), **kwargs)
         context['likeusers'] = self.get_object().like.prefetch_related('likes__like')
         context['dislikeusers'] = self.get_object().dislike.prefetch_related('dislikes__dislike')
-        print(context)
+        context['comments'] = self.get_object().comments.prefetch_related('post').order_by('created')
+
         return context
+
+    def post(self, request, uuid, *args, **kwargs):
+        post = Posts.objects.get(uuid=uuid)
+        comments = post.comments.filter(active=True)
+
+        if request.method == 'POST':
+            comment_form = CommentForm(data=request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.user = self.request.user
+                new_comment.post = post
+                new_comment.save()
+        else:
+            comment_form = CommentForm()
+
+        return render(request,
+                      'post_details.html',
+                      {'posts': post, 'comments': comments, 'comment_form': comment_form})
 
 
 class AddLike(LoginRequiredMixin, View):
