@@ -23,7 +23,7 @@ class PostsList(ListView):
     paginate_by = 3
 
     def get_filter(self):
-        posts = Posts.objects.all()
+        posts = Posts.objects.all().order_by('-create_date')
         filter_form = PostsFilterSet(data=self.request.GET, queryset=posts)
 
         return filter_form
@@ -37,6 +37,10 @@ class CreatePost(LoginRequiredMixin, CreateView):
     template_name = 'create_post.html'
     form_class = CreatePostForm
     success_url = reverse_lazy('posts:list')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
 class PostDetail(LoginRequiredMixin, DetailView, MultipleObjectMixin):

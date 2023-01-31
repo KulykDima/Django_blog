@@ -10,6 +10,8 @@
 </head>
     <body>
         {% include 'includes/header.html' %}
+        <div class="container mt-1 pt-1">
+        {% include 'includes/messages.html' %}
         <div class="container mt-4 pt-5">
             <div class="border rounded text-center p-3 m-3 mb-5 bg-light shadow">
                 <h1>{% block header %}{% endblock %}</h1>
