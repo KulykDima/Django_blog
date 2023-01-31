@@ -42,7 +42,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for post in object_list.qs %}
+            {% for post in object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ post.title }}</td>
@@ -78,5 +78,10 @@
         </table>
     {% else %}
         <p>There are no posts yet!</p>
+    {% endif %}
+    {% if is_paginated %}
+    <div class="row">
+        {% include 'includes/paginator.html' %}
+    </div>
     {% endif %}
 {% endblock %}
