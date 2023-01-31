@@ -4,6 +4,7 @@ from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
 from accounts.utils import signer
 
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
@@ -69,9 +70,21 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 class UserLoginView(LoginView):
     template_name = 'accounts/user_login.html'
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f'User {self.request.user} has logged in')
+
+        return response
+
 
 class UserLogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'accounts/user_logout.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        user = self.request.user
+        response = super().dispatch(request, *args, **kwargs)
+        messages.success(self.request, f'User {user} successfully logged out')
+        return response
 
 
 def user_profile_view(request):

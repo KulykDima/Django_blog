@@ -39,4 +39,10 @@ class AdminPost(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('post', 'user', 'created', 'active')
     list_filter = ('active', 'created', 'updated')
-    search_fields = ('post', 'email', 'body')
+    search_fields = ('post', 'body')
+    fieldsets = (
+        ('User info', {'fields': (('user', 'created', 'updated', ),)}),
+        ('Post Comment', {'fields': ('post', 'body', )}),
+        ('Active', {'fields': (('active', ), )}),
+    )
+    readonly_fields = ('created', 'updated', )
