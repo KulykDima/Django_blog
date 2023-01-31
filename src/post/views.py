@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404  # noqa
 from django.urls import reverse, reverse_lazy
@@ -7,9 +8,10 @@ from django.views.generic import CreateView
 from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
+from django.views.generic.list import MultipleObjectMixin
 
-
-from post.forms import CreatePostForm, CommentForm
+from post.forms import CommentForm
+from post.forms import CreatePostForm
 from post.forms import PostsFilterSet
 from post.forms import UpdatePostForm
 from post.models import Posts
@@ -18,12 +20,16 @@ from post.models import Posts
 class PostsList(ListView):
     model = Posts
     template_name = 'list_of_posts.html'
+    paginate_by = 3
 
-    def get_queryset(self):
+    def get_filter(self):
         posts = Posts.objects.all()
         filter_form = PostsFilterSet(data=self.request.GET, queryset=posts)
 
         return filter_form
+
+    def get_queryset(self):
+        return self.get_filter().qs
 
 
 class CreatePost(LoginRequiredMixin, CreateView):
@@ -33,10 +39,11 @@ class CreatePost(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('posts:list')
 
 
-class PostDetail(DetailView):
+class PostDetail(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     model = Posts
     template_name = 'post_details.html'
     pk_url_kwarg = 'uuid'
+    paginate_by = 2
 
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('uuid')
@@ -44,10 +51,12 @@ class PostDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(object_list=self.get_queryset(), **kwargs)
+        page = self.request.GET.get('page')
         context['likeusers'] = self.get_object().like.prefetch_related('likes__like')
         context['dislikeusers'] = self.get_object().dislike.prefetch_related('dislikes__dislike')
-        context['comments'] = self.get_object().comments.prefetch_related('post').order_by('created')
-
+        context['comments'] = self.get_object().comments.prefetch_related('post').order_by('-created')
+        context['comments'] = Paginator(context['comments'], 4).get_page(page)
+        print(context)
         return context
 
     def post(self, request, uuid, *args, **kwargs):

@@ -74,23 +74,7 @@
    <header>
     <h2>Comments</h2>
    </header>
-    {% for comment in comments %}
-   <nav>
-    <ul>
-     <li>Commented {{ forloop.counter }} by {{ comment.user.username }} {{ comment.created }}</li>
-    </ul>
-   </nav>
-
-   <article>
-    <p>{{ comment.body|linebreaks }}</p>
-   </article>
-
-   <footer></footer>
-        {% empty %}
-    <p>There are no comments yet.</p>
-        {% endfor %}
-
-        {% if new_comment %}
+     {% if new_comment %}
     <h2>Your comment has been added.</h2>
     {% else %}
     <h2>Add a new comment</h2>
@@ -100,7 +84,25 @@
         <p><input class="btn btn-outline-success m-7" type="submit" value="Add comment"></p>
     </form>
     {% endif %}
+    {% for comment in comments %}
+   <nav>
+    <ul>
+     <li>Comment {{ forloop.counter }} by {{ comment.user.username }} {{ comment.created }}</li>
+    </ul>
+   </nav>
+   <article>
+    <p>{{ comment.body|linebreaks }}</p>
+   </article>
 
+   <footer></footer>
+        {% empty %}
+    <p>There are no comments yet.</p>
+        {% endfor %}
+        {% if is_paginated %}
+    <div class="row">
+        {% include 'includes/paginator.html' with page=posts %}
+    </div>
+    {% endif %}
         <div class="row">
             <form method="get" class="d-flex justify-content-center mt-1 mb-2"
                   action="{% url 'posts:update' posts.uuid %}">
