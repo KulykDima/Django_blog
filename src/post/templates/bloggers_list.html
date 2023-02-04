@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_filters %}
+
+{% block title %}
+    Bloggers list
+{% endblock %}
+
+{% block header %}
+    Bloggers list
+{% endblock %}
+
+{% block content %}
+{#<div class="accordion" id="accordionExample">#}
+{#      <div class="accordion-item">#}
+{#        <h2 class="accordion-header" id="headingOne">#}
+{#          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">#}
+{#            Search form#}
+{#          </button>#}
+{#        </h2>#}
+{#        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">#}
+{#          <div class="accordion-body">#}
+{#                    <form method="get">#}
+{#                    {{ object_list.form|crispy }}#}
+{#                    <button class="btn btn-outline-success mt-3" type="submit" value="Search">Search</button>#}
+{#                </form>#}
+{#            </div>#}
+{#                  </div>#}
+{#                </div>#}
+{#              </div>#}
+    {% if object_list %}
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>№</th>
+                    <th>Author</th>
+                    <th>Count of Posts</th>
+                    <th>Count of Likes</th>
+                    <th>Count of Dislikes</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for post in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ post.username }}</td>
+                    <td>{{ post.posts_set.count }}</td>
+                    <td>{{ post.likes.count }}</td>
+                    <td>{{ post.dislikes.count }}</td>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>There are no posts yet!</p>
+    {% endif %}
+    {% if is_paginated %}
+    <div class="row">
+        {% include 'includes/paginator.html' %}
+    </div>
+    {% endif %}
+{% endblock %}
