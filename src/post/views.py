@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.db.models import Prefetch
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404  # noqa
 from django.urls import reverse, reverse_lazy
@@ -10,6 +11,7 @@ from django.views.generic import ListView
 from django.views.generic import UpdateView
 from django.views.generic.list import MultipleObjectMixin
 
+from accounts.models import User
 from post.forms import CommentForm
 from post.forms import CreatePostForm
 from post.forms import PostsFilterSet
@@ -168,3 +170,14 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
                 }
             )
         )
+
+
+class ListOfBloggers(ListView):
+    model = User
+    template_name = 'bloggers_list.html'
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(object_list=self.get_queryset(), **kwargs)
+    #     context['posts'] = Posts.objects.filter(author_id=self.request.user.pk)
+    #     return context
+
