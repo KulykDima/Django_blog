@@ -45,7 +45,10 @@
             {% for post in object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ post.username }}</td>
+                <td>{% if user.is_authenticated %} <a href="{% url 'posts:blogger_detail' post.id %}">
+                    {{ post.username }}</a>
+                    {% else %} {{ post.username }}
+                        {% endif %}</td>
                     <td>{{ post.posts_set.count }}</td>
                     <td>{{ post.likes.count }}</td>
                     <td>{{ post.dislikes.count }}</td>

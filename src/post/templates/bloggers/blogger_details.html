@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Blogger {{ blogger.username }}
+{% endblock %}
+
+{% block header %}
+    Blogger {{ blogger.username|title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Username</td>
+                            <td>{{ blogger.username }}</td>
+                        </tr>
+                        <tr>
+                            <td>First/Last name</td>
+                            <td>{% if blogger.last_name %} {{ blogger.first_name }} {{ blogger.last_name }}
+                            {% else %} This field is empty {% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td>Likes/Dislikes</td>
+                            <td>{{ blogger.likes.count }} | {{ blogger.dislikes.count }}</td>
+{#                            Сделать навбар!!! #}
+                        </tr>
+                        <tr>
+                            <td>Author's posts</td>
+                            <td>{% if posts %}{% for post in posts %} | <a href="{% url 'posts:detail' uuid=post.uuid %}">
+                                    {{ post.title }}</a> |
+                            {% endfor %} {% else %} Blogger didn't make any posts yet {% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td>Blogger Email</td>
+                            <td>{{ blogger.email }}</td>
+                        </tr>
+                        <tr>
+                            <td>Another information</td>
+                            <td>{% if blogger.city %} City - {{ blogger.city }} Birthday - {{ blogger.birthday|date:'d-M-Y' }}
+                                    {{ post.title }}
+                            {% else %} This field is empty {% endif %}</td>
+                        </tr>
+                    </tbody>
+              </table>
+            </div>
+        </div>
+    <div align="center">
+                <a class="btn btn-outline-primary m-2" href="{% url 'posts:blogger_list' %}">Back to bloggers list</a>
+        </div>
+        {% if is_paginated %}
+    <div class="row">
+        {% include 'includes/paginator.html' %}
+    </div>
+    {% endif %}
+{% endblock %}

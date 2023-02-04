@@ -1,6 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import Prefetch
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404  # noqa
 from django.urls import reverse, reverse_lazy
@@ -174,10 +174,21 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
 
 class ListOfBloggers(ListView):
     model = User
-    template_name = 'bloggers_list.html'
+    template_name = 'bloggers/bloggers_list.html'
 
     # def get_context_data(self, *, object_list=None, **kwargs):
     #     context = super().get_context_data(object_list=self.get_queryset(), **kwargs)
     #     context['posts'] = Posts.objects.filter(author_id=self.request.user.pk)
     #     return context
 
+
+@login_required
+def blogger_details(request, author_id):
+    blogger = get_object_or_404(User, pk=author_id)
+    posts = Posts.objects.filter(author_id=author_id).order_by('create_date')
+    return render(request=request,
+                  template_name='bloggers/blogger_details.html',
+                  context={
+                      'blogger': blogger,
+                      'posts': posts
+                  })
