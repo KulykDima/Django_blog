@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
     Details of exam
 {% endblock %}
@@ -9,7 +11,7 @@
     <style>
 
    header, footer {
-    padding: 1em;
+    padding: 2px;
     color: white;
     background-color: black;
     clear: left;
@@ -36,40 +38,30 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <td>Description</td>
-                            <td>{{ posts.title }}</td>
-                        </tr>
-                        <tr>
-                            <td>Text</td>
-                            <td>{{ posts.text }}</td>
-                        </tr>
-                        <tr>
-                            <td>Post Author</td>
-                            <td>{{ posts.author }}</td>
-                        </tr>
-                        <tr>
-                            <td>Likers</td>
-                            <td><h5 title="{% for user in likeusers %} {{ user.username }}, {% endfor %}">{{ posts.like.count }}</h5></td>
-                        </tr>
-                        <tr>
-                            <td>Dislikers</td>
-                            <td><h5 title="{% for users in dislikeusers %}{{ users.username }}, {% endfor %}">{{ posts.dislike.count }}</h5></td>
-                        </tr>
-                        <tr>
-                            <td>Post created</td>
-                            <td>{{ posts.create_date|date:'d-M-Y' }}</td>
-                        </tr>
-                    </tbody>
-              </table>
-            </div>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/blog_page.css' %}">
+                        <div class="container">
+    <div class="post">
+        <div class="post-image">
+            <img src="http://blog.webnode.com/wp-content/uploads/2016/10/Blog-intro.jpg">
         </div>
-    <div class="row">
+        <div class="post-content">
+            <div class="post-header">
+                <h1>{{ posts.title }}</h1>
+                <div class="post-meta">
+                    <time datetime="2019-04-01">{{ posts.create_date|date:'d-M-Y' }}</time>
+                    <span class="author">{{ posts.author.username|title }}</span>
+                    <span class="author" title="{% for user in likeusers %} {{ user.username }},
+                    {% endfor %}"> Likes - {{ posts.like.count }}</span>
+                    <span title="{% for user in dislikeusers %} {{ user.username }},
+                    {% endfor %}"> Dislikes - {{ posts.dislike.count }}</span>
+                </div>
+            </div>
+            <p>{{ posts.text }}
+            </p>
+        </div>
+    </div>
+</div>
+    <div class="exit">
             <form method="get" class="d-flex justify-content-center mt-1 mb-2"
                   action="{% url 'posts:update' posts.uuid %}">
                 {% csrf_token %}
@@ -78,14 +70,11 @@
             </form>
         </div>
 
-  <div class="container">
-   <header>
-    <h2>Comments</h2>
-   </header>
+  <div class="comments">
      {% if new_comment %}
     <h2>Your comment has been added.</h2>
     {% else %}
-    <h2>Add a new comment</h2>
+    <h2>Comments</h2>
     <form method="post" action="{% url 'posts:detail' uuid=posts.uuid %}">
         {{ comment_form.as_p }}
         {% csrf_token %}
@@ -111,4 +100,5 @@
         {% include 'includes/paginator.html' with page=posts %}
     </div>
     {% endif %}
+  </div>
 {% endblock %}

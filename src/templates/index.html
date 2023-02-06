@@ -2,8 +2,35 @@
 
 {% block title %} Home page {% endblock %}
 
+{% load static %}
+
 {% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+<div class="post-wrap">
+<div class="post-item">
+<div class="post-item-wrap">
+<a href="{% url 'posts:list' %}" class="post-link">
+<img src="https://images.pexels.com/photos/839443/pexels-photo-839443.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
+<div class="post-info">
+<div class="post-meta">
+</div>
+<h3 class="post-title">Cписок блогов</h3>
+</div>
+</a>
+</div>
+</div>
 
-<h1 align="center">Welcome to our Blog!!!</h1>
-
+<div class="post-item">
+<div class="post-item-wrap">
+<a href="{% url 'posts:blogger_list' %}" class="post-link">
+<img src="https://images.pexels.com/photos/3178818/pexels-photo-3178818.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1">
+<div class="post-info">
+<div class="post-meta">
+</div>
+<h3 class="post-title">Авторы контента</h3>
+</div>
+</a>
+</div>
+</div>
+</div>
 {% endblock %}
