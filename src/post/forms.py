@@ -6,6 +6,7 @@ from django.db import models
 
 from django_filters import FilterSet
 
+from accounts.models import User
 from .models import Comment
 from .models import Posts
 
@@ -32,7 +33,21 @@ class UpdatePostForm(forms.ModelForm):
 class PostsFilterSet(FilterSet):
     class Meta:
         model = Posts
-        fields = ['title']
+        fields = ['title', ]
+        filter_overrides = {
+            models.CharField: {
+                'filter_class': django_filters.CharFilter,
+                'extra': lambda f: {
+                    'lookup_expr': 'icontains',
+                },
+            },
+        }
+
+
+class BloggersFilterSet(FilterSet):
+    class Meta:
+        model = User
+        fields = ['username', ]
         filter_overrides = {
             models.CharField: {
                 'filter_class': django_filters.CharFilter,

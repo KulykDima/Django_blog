@@ -12,7 +12,7 @@ from django.views.generic import UpdateView
 from django.views.generic.list import MultipleObjectMixin
 
 from accounts.models import User
-from post.forms import CommentForm
+from post.forms import CommentForm, BloggersFilterSet
 from post.forms import CreatePostForm
 from post.forms import PostsFilterSet
 from post.forms import UpdatePostForm
@@ -32,6 +32,12 @@ class PostsList(ListView):
 
     def get_queryset(self):
         return self.get_filter().qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_filter().form
+
+        return context
 
 
 class CreatePost(LoginRequiredMixin, CreateView):
@@ -176,10 +182,20 @@ class ListOfBloggers(ListView):
     model = User
     template_name = 'bloggers/bloggers_list.html'
 
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(object_list=self.get_queryset(), **kwargs)
-    #     context['posts'] = Posts.objects.filter(author_id=self.request.user.pk)
-    #     return context
+    def get_filter(self):
+        users = User.objects.all()
+        filter_form = BloggersFilterSet(data=self.request.GET, queryset=users)
+
+        return filter_form
+
+    def get_queryset(self):
+        return self.get_filter().qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_filter().form
+
+        return context
 
 
 @login_required
