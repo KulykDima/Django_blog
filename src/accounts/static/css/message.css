@@ -1,0 +1,138 @@
+.message {
+  padding: 2.5rem 0;
+}
+
+.message > a span {
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+
+.message.message--unread a span {
+  font-weight: 700;
+  color: red;
+}
+
+.message:not(:last-child) {
+  border-bottom: 2px solid white;
+}
+
+.message > a {
+  display: flex;
+  gap: 1rem;
+}
+
+.message__author,
+.message__date {
+  flex-basis: 25%;
+}
+
+.message__subject {
+  flex-basis: 50%;
+}
+
+.message__date {
+  text-align: right;
+}
+
+
+.message.message {
+  list-style: none;
+  background: white;
+  padding: 3.5rem 5rem;
+  border: 2px solid lightblue;
+  border-radius: 0.7rem;
+}
+
+.message.message__subject {
+  font-size: 2.8rem;
+  color: darkslategrey;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.message.message__author {
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.message.message__date {
+  font-size: 1.4rem;
+  font-weight: 400;
+  text-align: left;
+  margin-bottom: 3rem;
+}
+
+.inbox {
+  height: 90vh;
+}
+
+.inbox__title,
+.inbox__title span {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: darkslategrey;
+  text-transform: uppercase;
+  text-align: left;
+  margin-bottom: 3rem;
+}
+
+.inbox__title span {
+  color: yellowgreen;
+}
+
+.formPage .formWrapper {
+  list-style: none;
+  background: white;
+  padding: 3.5rem 5rem;
+  border: 2px solid lightblue;
+  border-radius: 0.7rem;
+}
+
+.formPage .formWrapper__subject {
+  font-size: 2.8rem;
+  color: greenyellow;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.content-box {
+  width: 95%;
+  max-width: 85rem;
+  margin: 0 auto;
+}
+
+.form {
+  display: block;
+}
+
+.form--inline {
+  display: inline-block;
+}
+
+.form__field {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form__error {
+  color: red;
+  display: block;
+  font-size: 1.4rem;
+}
+
+.form__label,
+.form__field > label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: black;
+}
+
+.form__label--inline {
+  display: inline-block;
+  margin-bottom: 0.8rem;
+  color: black;
+}
+
+.btn--sub {
+  background-color: greenyellow;
+}

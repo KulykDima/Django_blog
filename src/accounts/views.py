@@ -1,5 +1,8 @@
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+
 from accounts.apps import user_register
-from accounts.forms import ActivationLetterAgain
+from accounts.forms import ActivationLetterAgain, MessageForm
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
 from accounts.utils import signer
@@ -10,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.signing import BadSignature
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
 
@@ -30,7 +33,6 @@ def send_activation_letter(request):
     if request.method == 'POST':
         username = request.POST.get('email')
         user = get_object_or_404(get_user_model(), email=username)
-        print(username, user)
         form = ActivationLetterAgain(request.POST)
         if user.is_activated:
             return render(request, 'accounts/user_is_activated.html')
@@ -89,3 +91,40 @@ class UserLogoutView(LoginRequiredMixin, LogoutView):
 
 def user_profile_view(request):
     return render(request, 'accounts/user_profile.html')
+
+
+@login_required
+def inbox(request):
+    user = request.user
+    messages = user.messages.all()
+    count_of_unreaded = messages.filter(is_readed=False).count()
+    return render(request, 'messages/inbox.html', {'messages': messages, 'count_of_unreaded': count_of_unreaded})
+
+
+@login_required
+def message_view(request, pk):
+    user = request.user
+    message = user.messages.get(id=pk)
+    if not message.is_readed:
+        message.is_readed = True
+        message.save()
+
+    return render(request, 'messages/message.html', {'message': message})
+
+
+@login_required
+def create_message(request):
+    form = MessageForm()
+
+    if request.method == 'POST':
+        form = MessageForm(data=request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            message.name = request.user
+            message.save()
+
+            messages.success(request, 'Your message has been sent')
+            return HttpResponseRedirect(reverse('accounts:inbox'))
+
+    return render(request, 'messages/message_form.html', {'form': form})
