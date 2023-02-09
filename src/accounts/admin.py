@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import User
+from .models import User, Message
 
 
 class StaffFilter(admin.SimpleListFilter):
@@ -56,3 +56,9 @@ class UserAdmin(admin.ModelAdmin):
 
     def avatar_img(self, obj):
         return format_html(f'<img src="{obj.avatar.url}" alt="{obj.username}" width="50" height="50">')
+
+
+@admin.register(Message)
+class AdminMessage(admin.ModelAdmin):
+    list_display = ('name', 'subject', 'sender', 'recipient', 'is_readed',)
+    readonly_fields = ('is_readed', )
