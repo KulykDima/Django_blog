@@ -2,10 +2,9 @@
 
 {% load static %}
 
-
 {% block content %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/message.css' %}">
-    <link rel="script" type="text/css" href="{% static 'js/main.js' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'message/css/message.css' %}">
+    <link rel="script" type="text/css" href="{% static 'message/js/main.js' %}">
 <main class="messagePage my-xl">
   <div class="content-box">
     <div class="message">
@@ -19,6 +18,11 @@
         <p class="message__date">{{ message.created }}</p>
         <div class="message__body">{{ message.body|linebreaksbr }}</div>
     </div>
+  <div align="center">
+                <a class="btn btn-outline-primary m-2" href="{% url 'accounts:inbox' %}">Back to inbox</a>
+{#                <a class="btn btn-outline-primary m-2" href="{% url 'accounts:reply' username %}">Reply</a>#}
+        </div>
+
   </div>
 </main>
 {% endblock content %}
