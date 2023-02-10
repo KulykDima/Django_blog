@@ -96,9 +96,9 @@ def user_profile_view(request):
 @login_required
 def inbox(request):
     user = request.user
-    messages = user.messages
+    messages = user.messages.all()
     count_of_unreaded = messages.filter(is_readed=False).count()
-    return render(request, 'messages/inbox.html', {'img': messages, 'count_of_unreaded': count_of_unreaded})
+    return render(request, 'messages/inbox.html', {'messages': messages, 'count_of_unreaded': count_of_unreaded})
 
 
 @login_required
