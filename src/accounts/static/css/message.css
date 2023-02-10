@@ -136,3 +136,13 @@
 .btn--sub {
   background-color: greenyellow;
 }
+
+.alert {
+  position: fixed;
+  left: 50%;
+  top: 120px;
+  transform: translate(-50%, -50%);
+
+
+  z-index: 99999;
+}

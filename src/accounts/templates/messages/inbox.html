@@ -3,10 +3,10 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/message.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'message/css/message.css' %}">
 <main class="inbox my-xl">
   <div class="content-box">
-    <h3 class="inbox__title">Новые сообщения:(<span>{{count_of_unreaded}} <a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg">Написать сообщение </a></span>)</h3>
+    <h3 class="inbox__title">Новые сообщения:(<span>{{count_of_unreaded}} | <a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg">Написать сообщение </a></span>)</h3>
 
     <ul class="messages">
       {% for message in messages %}
@@ -15,7 +15,6 @@
         {% else %}
       <li class="message">
         {% endif %}
-
         <a href="{% url 'accounts:message' message.id %}">
           <span class="message__author">{{message.sender}}</span>
           <span class="message__subject">{{message.subject}}</span>

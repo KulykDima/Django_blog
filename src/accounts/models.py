@@ -29,7 +29,7 @@ class User(AbstractUser):
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    recipient = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='messages')
+    recipient = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='img')
     name = models.CharField(max_length=200, null=True, blank=True)
     subject = models.CharField(max_length=200, null=True, blank=True)
     body = models.TextField(max_length=1000)

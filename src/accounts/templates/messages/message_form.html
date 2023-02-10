@@ -3,23 +3,23 @@
 {% load static %}
 
 {% block content %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/message.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'message/css/message.css' %}">
 <main class="formPage my-xl">
     <div class="content-box">
         <div class="formWrapper">
             <form class="form" method="POST">
                 {% csrf_token %}
-
+                <h5>Write a message</h5>
                 <div class="form__field">
-                    <label for="formInput#text">{{ form.recipient }}</label>
+                    <label for="formInput#text">To: {{ form.recipient }}</label>
                 </div>
 
                 <div class="form__field">
-                    <label for="formInput#text">{{ form.subject }}</label>
+                    <label for="formInput#text">Subject: {{ form.subject }}</label>
                 </div>
 
                 <div class="form__field">
-                    <label for="formInput#text">{{ form.body }}</label>
+                    <label for="formInput#text">Text: {{ form.body }}</label>
                 </div>
 
                 <input class="btn btn--sub btn--lg  my-md" type="submit" value="Отправить" />
