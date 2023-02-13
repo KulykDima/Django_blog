@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from .views import UserLoginView, inbox, message_view, create_message
+from .views import UserLoginView, create_message, inbox, message_view
 from .views import UserLogoutView
 from .views import UserRegistrationView
 from .views import UserUpdateView

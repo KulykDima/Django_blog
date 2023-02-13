@@ -1,6 +1,3 @@
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-
 from accounts.apps import user_register
 from accounts.forms import ActivationLetterAgain, MessageForm
 from accounts.forms import UserRegisterForm
@@ -9,11 +6,13 @@ from accounts.utils import signer
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.signing import BadSignature
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
 

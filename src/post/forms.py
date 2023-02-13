@@ -1,3 +1,5 @@
+from accounts.models import User
+
 from django import forms
 
 import django_filters
@@ -6,7 +8,6 @@ from django.db import models
 
 from django_filters import FilterSet
 
-from accounts.models import User
 from .models import Comment
 from .models import Posts
 

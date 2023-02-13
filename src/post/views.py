@@ -1,3 +1,5 @@
+from accounts.models import User
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
@@ -11,8 +13,8 @@ from django.views.generic import ListView
 from django.views.generic import UpdateView
 from django.views.generic.list import MultipleObjectMixin
 
-from accounts.models import User
-from post.forms import CommentForm, BloggersFilterSet
+from post.forms import BloggersFilterSet
+from post.forms import CommentForm
 from post.forms import CreatePostForm
 from post.forms import PostsFilterSet
 from post.forms import UpdatePostForm
