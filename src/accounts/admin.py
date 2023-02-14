@@ -7,6 +7,21 @@ from .models import Message
 from .models import User
 
 
+class UserPostsTabular(admin.TabularInline):
+    from post.models import Posts
+    model = Posts
+    fields = ('title', 'create_date')
+    extra = 0
+    readonly_fields = fields
+
+    def get_queryset(self, request):
+        queryset = self.model.objects.all()
+        return queryset
+
+    def has_add_permission(self, request, obj):
+        return False
+
+
 class ActivatedFilter(admin.SimpleListFilter):
     title = 'Activated Filter'
     parameter_name = 'activated_filter'
@@ -55,6 +70,7 @@ class UserAdmin(admin.ModelAdmin):
 
     readonly_fields = ('last_login', 'date_joined', 'avatar_img', )
     list_filter = (StaffFilter, ActivatedFilter)
+    inlines = [UserPostsTabular, ]
 
     def avatar_img(self, obj):
         return format_html(f'<img src="{obj.avatar.url}" alt="{obj.username}" width="50" height="50">')
