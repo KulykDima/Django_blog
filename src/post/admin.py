@@ -4,6 +4,24 @@ from post.models import Comment
 from post.models import Posts
 
 
+class CommentsTabularInline(admin.TabularInline):
+    from .models import Comment
+    model = Comment
+    fields = ('user', 'created', )
+    extra = 0
+    readonly_fields = fields
+
+    def get_queryset(self, request):
+        queryset = self.model.objects.select_related('user')
+        return queryset
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
 class PostsFilter(admin.SimpleListFilter):
     title = 'Posts Filter'
     parameter_name = 'posts_filter'
@@ -33,6 +51,7 @@ class AdminPost(admin.ModelAdmin):
 
     readonly_fields = ('create_date', 'like', 'dislike', )
     list_filter = (PostsFilter, )
+    inlines = [CommentsTabularInline, ]
 
 
 @admin.register(Comment)
