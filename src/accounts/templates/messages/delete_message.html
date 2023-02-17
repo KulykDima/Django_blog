@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Delete message
+{% endblock %}
+
+{% block content %}
+     <div class="row">
+        <div class="col-3"></div>
+        <div class="col">
+            <form method="post">
+                {% csrf_token %}
+                <p><strong>Do you really want to remove message {{ message.subject }}"?</strong></p>
+                <button class="btn btn-outline-danger mt-3" type="submit">Delete</button>
+                    <a class="btn btn-outline-primary mt-3" href="{% url 'accounts:inbox' %}">Back to list</a>
+</form>
+                      </div>
+        <div class="col-3"></div>
+    </div>
+{% endblock %}

@@ -19,6 +19,8 @@
           <span class="message__author">{{message.sender}}</span>
           <span class="message__subject">{{message.subject}}</span>
           <span class="message__date">{{message.created}}</span>
+        <center><span><a class="btn btn-outline-primary m-2"
+                           href="{% url 'accounts:delete_message' message.id %}">Delete message</a></span></center>
         </a>
       </li>
       {% endfor %}

@@ -9,14 +9,14 @@
   <div class="content-box">
     <div class="message">
       <a class="backButton" href="{% url 'accounts:inbox' %}"><i class="im im-angle-left"></i></a>
-      <h2 class="message__subject">{{ message.subject }}</h2>
+      <h2 class="message__subject"><strong>Subject:</strong>{{ message.subject }}</h2>
         {% if message.sender %}
-        <h2 class="message__author">{{ message.sender }}</h2>
+        <h2 class="message__author"><strong>Sender:</strong>{{ message.sender }}</h2>
         {% else %}
-        <p class="message__author">{{ message.name }}</p>
+        <p class="message__author"><strong>Name: </strong>{{ message.name }}</p>
         {% endif %}
-        <p class="message__date">{{ message.created }}</p>
-        <div class="message__body">{{ message.body|linebreaksbr }}</div>
+        <p class="message__date"><strong>Date: </strong>{{ message.created }}</p>
+        <div class="message__body"><strong>Body: </strong>{{ message.body|linebreaksbr }}</div>
     </div>
   <div align="center">
                 <a class="btn btn-outline-primary m-2" href="{% url 'accounts:inbox' %}">Back to inbox</a>

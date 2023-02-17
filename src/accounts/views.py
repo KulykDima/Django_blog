@@ -2,6 +2,7 @@ from accounts.apps import user_register
 from accounts.forms import ActivationLetterAgain, MessageForm
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
+from accounts.models import Message
 from accounts.utils import signer
 
 from django.contrib import messages
@@ -13,7 +14,7 @@ from django.core.signing import BadSignature
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView
 from django.views.generic import UpdateView
 
 
@@ -122,8 +123,20 @@ def create_message(request):
             message.sender = request.user
             message.name = request.user
             message.save()
-
             messages.success(request, 'Your message has been sent')
-            return HttpResponseRedirect(reverse('accounts:inbox'))
 
+            return HttpResponseRedirect(reverse('accounts:inbox'))
     return render(request, 'messages/message_form.html', {'form': form})
+
+
+class DeleteMessage(LoginRequiredMixin, DeleteView):
+    model = Message
+    template_name = 'messages/delete_message.html'
+    # success_url = reverse_lazy('accounts:inbox')
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    success_message = "Message was deleted successfully."
+
+    def get_success_url(self):
+        messages.success(self.request, self.success_message)
+        return reverse('index')
