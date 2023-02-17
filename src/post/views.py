@@ -1,3 +1,5 @@
+from django.contrib import messages
+
 from accounts.models import User
 
 from django.contrib.auth.decorators import login_required
@@ -47,6 +49,10 @@ class CreatePost(LoginRequiredMixin, CreateView):
     template_name = 'create_post.html'
     form_class = CreatePostForm
     success_url = reverse_lazy('posts:list')
+
+    def get_success_url(self):
+        messages.success(self.request, 'Your post has been published')
+        return reverse('posts:list')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -169,6 +175,7 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         uuid = self.kwargs.get('uuid')
+        messages.success(self.request, 'Your post has been edited')
 
         return (
             reverse(

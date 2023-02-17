@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from .views import UserLoginView, create_message, inbox, message_view
+from .views import UserLoginView, create_message, DeleteMessage, inbox, message_view
 from .views import UserLogoutView
 from .views import UserRegistrationView
 from .views import UserUpdateView
@@ -24,4 +24,5 @@ urlpatterns = [
     path('profile/inbox', inbox, name='inbox'),
     path('profile/message/<str:pk>', message_view, name='message'),
     path('profile/message/new_message/', create_message, name='create_message'),
+    path('profile/inbox/delete_message/<slug:id>', DeleteMessage.as_view(), name='delete_message'),
 ]
