@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% load crispy_forms_tags %}
 
 {% block title %}
@@ -7,69 +9,71 @@
 {% endblock %}
 
 {% block header %}
-    {{ user.username }} profile.
+    My profile
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col">
-            <div class="row">
-                <div class="col-6 text-center">
-                    <img class="rounded-circle p-1 m-1" width="200" height="200" src="{{ user.avatar.url }}"
-                         alt="avatar">
-                </div>
-                <div class="col-6">
-                    <div class="row">
-                        <label for="username" class="col-4"><strong>Username:</strong></label>
-                        <div class="col-8">
-                            <p id="username">{{ user.username }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label for="email" class="col-4"><strong>E-Mail:</strong></label>
-                        <div class="col-8">
-                            <p id="email">{{ user.email }}</p>
-                        </div>
+        <link rel="stylesheet" type="text/css" href="{% static 'accounts/css/profile_stylesheet.css' %}">
+
+    <div class="row py-2 px-2">
+    <div class="col-xl-5 col-md-6 col-sm-10 mx-auto">
+
+        <div class="bg-white shadow rounded overflow-hidden">
+            <div class="px-4 pt-0 pb-4 bg-dark">
+                <div class="media align-items-end profile-header">
+                    <div class="profile mr-3"><img class="rounded-circle p-1 m-1" width="150" height="150" src="{{ user.avatar.url }}"
+                         alt="avatar" align="right"><a href="{% url 'accounts:profile_update' %}" class="btn btn-outline-primary m-2">Edit profile</a></div>
+                    <div class="media-body mb-5 text-white">
+                        <h4 class="mt-0 mb-0">{% if user.last_name %}{{ user.first_name }} {{ user.last_name }} {% else %} {{ user.username }} {% endif %}</h4>
+                        <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>City - {% if user.city %}{{ user.city }} {% else %} - {% endif %}</p>
+                    <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>Email - {{ user.email }}</p>
+                    <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>Birthday - {% if user.birthday %} {{ user.birthday }} {% else %} None {% endif %}</p>
+                    <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>.</p>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-6">
-                    <label for="firstname" class="col-4"><strong>First name:</strong></label>
-                    <div class="col-8">
-                        <p id="firstname">{{ user.first_name }}</p>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <label for="lastname" class="col-4"><strong>Last name:</strong></label>
-                    <div class="col-8">
-                        <p id="lastname">{{ user.last_name }}</p>
-                    </div>
-                </div>
+
+            <div class="bg-light p-4 d-flex justify-content-end text-center">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">{{ user.likes.count }}</h5><small class="text-muted"> <i class="fa fa-picture-o mr-1"></i>Likes</small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">{{ user.dislikes.count }}</h5><small class="text-muted"> <i class="fa fa-user-circle-o mr-1"></i>Dislikes</small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">{{ posts.count }}</h5><small class="text-muted"> <i class="fa fa-user-circle-o mr-1"></i>Posts</small>
+                    </li>
+                </ul>
             </div>
-            <div class="row mt-4">
-                <div class="col-6">
-                    <label for="birthday" class="col-4"><strong>Birthday:</strong></label>
-                    <div class="col-8">
-                        <p id="birthday">{% if user.birthday %}{{ user.birthday }}{% endif %}</p>
-                    </div>
+
+            <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Recent photos</h5><a href="#" class="btn btn-link text-muted">Show all</a>
                 </div>
-                <div class="col-6">
-                    <label for="city" class="col-4"><strong>City:</strong></label>
-                    <div class="col-8">
-                        <p id="city">{% if user.city %}{{ user.city }}{% endif %}</p>
-                    </div>
+                <div class="row">
+                    <div class="col-lg-6 mb-2 pr-lg-1"><img src="https://bootstrapious.com/i/snippets/sn-profile/img-3.jpg" alt="" class="img-fluid rounded shadow-sm"></div>
+                    <div class="col-lg-6 mb-2 pl-lg-1"><img src="https://bootstrapious.com/i/snippets/sn-profile/img-4.jpg" alt="" class="img-fluid rounded shadow-sm"></div>
+                    <div class="col-lg-6 pr-lg-1 mb-2"><img src="https://bootstrapious.com/i/snippets/sn-profile/img-5.jpg" alt="" class="img-fluid rounded shadow-sm"></div>
+                    <div class="col-lg-6 pl-lg-1"><img src="https://bootstrapious.com/i/snippets/sn-profile/img-6.jpg" alt="" class="img-fluid rounded shadow-sm"></div>
                 </div>
-            </div>
-            <div class="row mt-4 text-center">
-                <div class="col">
-                    <a class="btn btn-outline-primary" href="{% url 'accounts:profile_update' %}">Change profile</a>
-                    <a class="btn btn-outline-primary" href="{% url 'password_change' %}">Change password</a>
+                <div class="py-4">
+                    <h5 class="mb-3">My posts</h5>
+                    <div class="p-4 bg-light rounded shadow-sm">
+                        <p class="font-italic mb-0">{% if posts %}{% for post in posts %} | <a href="{% url 'posts:detail' uuid=post.uuid %}">
+                                    {{ post.title }}</a> |
+                            {% endfor %} {% else %} Sorry, but you didn't make any post yet, maybe it's time to start! {% endif %}</p>
+                        <ul class="list-inline small text-muted mt-3 mb-0">
+                            <li class="list-inline-item"><i class="fa fa-comment-o mr-2"></i>12 Comments</li>
+                            <li class="list-inline-item"><i class="fa fa-heart-o mr-2"></i>200 Likes</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-2"></div>
+
     </div>
+</div>
 
 {% endblock %}
+

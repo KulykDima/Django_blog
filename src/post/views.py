@@ -1,15 +1,14 @@
-from django.contrib import messages
-
 from accounts.models import User
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404  # noqa
+from django.shortcuts import render, get_object_or_404, redirect  # noqa
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView
 from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.views.generic import UpdateView
@@ -165,6 +164,12 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
     form_class = UpdatePostForm
     template_name = 'update_post.html'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.user != kwargs['instance'].author:
+            return self.handle_no_permission()
+        return kwargs
+
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('uuid')
         return self.model.objects.get(uuid=uuid)
@@ -185,6 +190,28 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
                 }
             )
         )
+
+
+class DeletePost(LoginRequiredMixin, DeleteView):
+    model = Posts
+    template_name = 'delete_post.html'
+    pk_url_kwarg = 'uuid'
+    success_message = 'Post has been deleted'
+    error_message = 'You dont have permissions to do that'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return self.model.objects.get(uuid=uuid)
+
+    def form_valid(self, form):
+        success_url = reverse_lazy('posts:list')
+        if self.object.author != self.request.user:
+            messages.error(self.request, self.error_message)
+            return HttpResponseRedirect(success_url)
+
+        self.object.delete()
+        messages.success(self.request, self.success_message)
+        return redirect('posts:list')
 
 
 class ListOfBloggers(ListView):
