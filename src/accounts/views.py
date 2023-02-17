@@ -17,6 +17,8 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView
 from django.views.generic import UpdateView
 
+from post.models import Posts
+
 
 class UserRegistrationView(CreateView):
     model = get_user_model()
@@ -90,7 +92,8 @@ class UserLogoutView(LoginRequiredMixin, LogoutView):
 
 
 def user_profile_view(request):
-    return render(request, 'accounts/user_profile.html')
+    posts = Posts.objects.filter(author_id=request.user.pk).order_by('create_date')
+    return render(request, 'accounts/user_profile.html', {'posts': posts})
 
 
 @login_required
