@@ -2,7 +2,7 @@ from accounts.apps import user_register
 from accounts.forms import ActivationLetterAgain, MessageForm
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
-from accounts.models import Message
+from accounts.models import Message, User
 from accounts.utils import signer
 
 from django.contrib import messages
@@ -70,6 +70,11 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Your profile was successfully updated')
+        return response
+
 
 class UserLoginView(LoginView):
     template_name = 'accounts/user_login.html'
@@ -93,7 +98,22 @@ class UserLogoutView(LoginRequiredMixin, LogoutView):
 
 def user_profile_view(request):
     posts = Posts.objects.filter(author_id=request.user.pk).order_by('create_date')
-    return render(request, 'accounts/user_profile.html', {'posts': posts})
+    return render(request, 'accounts/user_profile.html',
+                  {'posts': posts})
+
+
+def blogger_profile_view(request, pk):
+    blogger = get_object_or_404(User, pk=pk)
+    posts = Posts.objects.filter(author_id=pk).order_by('create_date')
+    likes = User.objects.filter(
+        likes__author=pk).prefetch_related('likes')
+    dislikes = User.objects.filter(
+        dislikes__author=pk).prefetch_related('dislikes')
+    return render(request, 'accounts/blogger_profile_view.html',
+                  {'blogger': blogger,
+                   'posts': posts,
+                   'likes': likes,
+                   'dislikes': dislikes})
 
 
 @login_required

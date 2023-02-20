@@ -16,16 +16,16 @@
                     <tbody>
                         <tr>
                             <td>Username</td>
-                            <td>{{ blogger.username }}</td>
+                            <td><a href="{% url 'accounts:bloggers_profile' user.pk %}">{{ user.username }}</a></td>
                         </tr>
                         <tr>
                             <td>First/Last name</td>
-                            <td>{% if blogger.last_name %} {{ blogger.first_name }} {{ blogger.last_name }}
+                            <td>{% if user.last_name %} {{ user.first_name }} {{ user.last_name }}
                             {% else %} This field is empty {% endif %}</td>
                         </tr>
                         <tr>
                             <td>Likes/Dislikes</td>
-                            <td>{{ blogger.likes.count }} | {{ blogger.dislikes.count }}</td>
+                            <td>{{ likes.count }} | {{ dislikes.count }}</td>
 {#                            Сделать навбар!!! #}
                         </tr>
                         <tr>
@@ -33,16 +33,6 @@
                             <td>{% if posts %}{% for post in posts %} | <a href="{% url 'posts:detail' uuid=post.uuid %}">
                                     {{ post.title }}</a> |
                             {% endfor %} {% else %} Blogger didn't make any posts yet {% endif %}</td>
-                        </tr>
-                        <tr>
-                            <td>Blogger Email</td>
-                            <td>{{ blogger.email }}</td>
-                        </tr>
-                        <tr>
-                            <td>Another information</td>
-                            <td>{% if blogger.city %} City - {{ blogger.city }} Birthday - {{ blogger.birthday|date:'d-M-Y' }}
-                                    {{ post.title }}
-                            {% else %} This field is empty {% endif %}</td>
                         </tr>
                     </tbody>
               </table>
