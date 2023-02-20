@@ -25,7 +25,7 @@ from post.models import Posts
 class PostsList(ListView):
     model = Posts
     template_name = 'list_of_posts.html'
-    paginate_by = 3
+    paginate_by = 5
 
     def get_filter(self):
         posts = Posts.objects.all().order_by('-create_date')
@@ -234,13 +234,15 @@ class ListOfBloggers(ListView):
         return context
 
 
-@login_required
-def blogger_details(request, author_id):
-    blogger = get_object_or_404(User, pk=author_id)
-    posts = Posts.objects.filter(author_id=author_id).order_by('create_date')
-    return render(request=request,
-                  template_name='bloggers/blogger_details.html',
-                  context={
-                      'blogger': blogger,
-                      'posts': posts
-                  })
+class BloggerDetails(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'bloggers/blogger_details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['likes'] = User.objects.filter(
+            likes__author=self.kwargs['pk']).prefetch_related('likes')
+        context['dislikes'] = User.objects.filter(
+            dislikes__author=self.kwargs['pk']).prefetch_related('dislikes')
+        context['posts'] = Posts.objects.filter(author_id=self.kwargs['pk']).order_by('create_date')
+        return context

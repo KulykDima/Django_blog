@@ -2,13 +2,13 @@ from django.urls import path
 
 from post.views import AddDislike
 from post.views import AddLike
+from post.views import BloggerDetails
 from post.views import CreatePost
 from post.views import DeletePost
 from post.views import ListOfBloggers
 from post.views import PostDetail
 from post.views import PostUpdate
 from post.views import PostsList
-from post.views import blogger_details
 
 app_name = 'posts'
 
@@ -21,5 +21,5 @@ urlpatterns = [
     path('<int:pk>/dislike/', AddDislike.as_view(), name='dislike'),
     path('update/<uuid:uuid>', PostUpdate.as_view(), name='update'),
     path('bloggers/', ListOfBloggers.as_view(), name='blogger_list'),
-    path('bloggers/blogger/<int:author_id>', blogger_details, name='blogger_detail'),
+    path('bloggers/blogger/<int:pk>', BloggerDetails.as_view(), name='blogger_detail'),
 ]

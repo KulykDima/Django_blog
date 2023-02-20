@@ -5,11 +5,11 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    User profile
+    {{ blogger.username }} Profile
 {% endblock %}
 
 {% block header %}
-    My profile
+    {{ blogger.username }} Profile
 {% endblock %}
 
 {% block content %}
@@ -21,13 +21,13 @@
         <div class="bg-white shadow rounded overflow-hidden">
             <div class="px-4 pt-0 pb-4 bg-dark">
                 <div class="media align-items-end profile-header">
-                    <div class="profile mr-3"><img class="rounded-circle p-1 m-1" width="150" height="150" src="{{ user.avatar.url }}"
+                    <div class="profile mr-3"><img class="rounded-circle p-1 m-1" width="150" height="150" src="{{ blogger.avatar.url }}"
                          alt="avatar" align="right"><a href="{% url 'accounts:profile_update' %}" class="btn btn-outline-primary m-2">Edit profile</a></div>
                     <div class="media-body mb-5 text-white">
-                        <h4 class="mt-0 mb-0">{% if user.last_name %}{{ user.first_name }} {{ user.last_name }} {% else %} {{ user.username }} {% endif %}</h4>
-                        <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>City - {% if user.city %}{{ user.city }} {% else %} - {% endif %}</p>
-                    <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>Email - {{ user.email }}</p>
-                    <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>Birthday - {% if user.birthday %} {{ user.birthday }} {% else %} None {% endif %}</p>
+                        <h4 class="mt-0 mb-0">{% if user.last_name %}{{ blogger.first_name }} {{ blogger.last_name }} {% else %} {{ blogger.username }} {% endif %}</h4>
+                        <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>City - {% if blogger.city %}{{ blogger.city }} {% else %} - {% endif %}</p>
+                    <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>Email - {{ blogger.email }}</p>
+                    <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>Birthday - {% if blogger.birthday %} {{ blogger.birthday }} {% else %} None {% endif %}</p>
                     <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>.</p>
                     </div>
                 </div>
@@ -36,13 +36,13 @@
             <div class="bg-light p-4 d-flex justify-content-end text-center">
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">{{ user.likes.count }}</h5><small class="text-muted"> <i class="fa fa-picture-o mr-1"></i>Liked</small>
+                        <h5 class="font-weight-bold mb-0 d-block">{{ likes.count }}</h5><small class="text-muted"> <i class="fa fa-picture-o mr-1"></i>Likes</small>
                     </li>
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">{{ user.dislikes.count }}</h5><small class="text-muted"> <i class="fa fa-user-circle-o mr-1"></i>Disliked</small>
+                        <h5 class="font-weight-bold mb-0 d-block">{{ dislikes.count }}</h5><small class="text-muted"> <i class="fa fa-user-circle-o mr-1"></i>Dislikes</small>
                     </li>
                     <li class="list-inline-item">
-                        <h5 class="font-weight-bold mb-0 d-block">{{ posts.count }}</h5><small class="text-muted"> <i class="fa fa-user-circle-o mr-1"></i>Posts</small>
+                        <h5 class="font-weight-bold mb-0 d-block">{{ blogger.posts_set.count }}</h5><small class="text-muted"> <i class="fa fa-user-circle-o mr-1"></i>Posts</small>
                     </li>
                 </ul>
             </div>
@@ -58,7 +58,7 @@
                     <div class="col-lg-6 pl-lg-1"><img src="https://bootstrapious.com/i/snippets/sn-profile/img-6.jpg" alt="" class="img-fluid rounded shadow-sm"></div>
                 </div>
                 <div class="py-4">
-                    <h5 class="mb-3">My posts</h5>
+                    <h5 class="mb-3">Blogger posts</h5>
                     <div class="p-4 bg-light rounded shadow-sm">
                         <p class="font-italic mb-0">{% if posts %}{% for post in posts %} | <a href="{% url 'posts:detail' uuid=post.uuid %}">
                                     {{ post.title }}</a> |
@@ -76,4 +76,3 @@
 </div>
 
 {% endblock %}
-
