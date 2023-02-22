@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from .views import DeleteMessage, create_message, inbox, message_view, blogger_profile_view
+from .views import DeleteMessage, inbox, message_view, blogger_profile_view, SendMessageFromProfileView, CreateNewMessage
 from .views import UserLoginView
 from .views import UserLogoutView
 from .views import UserRegistrationView
@@ -24,7 +24,8 @@ urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('profile/inbox', inbox, name='inbox'),
     path('profile/message/<str:pk>', message_view, name='message'),
-    path('profile/message/new_message/', create_message, name='create_message'),
+    path('profile/message/new_message/', CreateNewMessage.as_view(), name='create_message'),
     path('profile/inbox/delete_message/<slug:id>', DeleteMessage.as_view(), name='delete_message'),
     path('profiles/user/<int:pk>', blogger_profile_view, name='bloggers_profile'),
+    path('profile/message/new_massage/<int:pk>', SendMessageFromProfileView.as_view(), name='send_message_to_blogger'),
 ]

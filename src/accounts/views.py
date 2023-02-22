@@ -1,5 +1,7 @@
+from django.views import View
+
 from accounts.apps import user_register
-from accounts.forms import ActivationLetterAgain, MessageForm
+from accounts.forms import ActivationLetterAgain, MessageForm, SendMessageFromProfile
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
 from accounts.models import Message, User
@@ -135,21 +137,55 @@ def message_view(request, pk):
     return render(request, 'messages/message.html', {'message': message})
 
 
-@login_required
-def create_message(request):
-    form = MessageForm()
+class CreateNewMessage(LoginRequiredMixin, View):
 
-    if request.method == 'POST':
-        form = MessageForm(data=request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.sender = request.user
-            message.name = request.user
-            message.save()
-            messages.success(request, 'Your message has been sent')
+    def get(self, request):
+        form = MessageForm()
+        return render(self.request, 'messages/message_form.html', {'form': form})
 
-            return HttpResponseRedirect(reverse('accounts:inbox'))
-    return render(request, 'messages/message_form.html', {'form': form})
+    def post(self, request, *args, **kwargs):
+        form = MessageForm()
+
+        if request.method == 'POST':
+            form = MessageForm(data=self.request.POST)
+            if form.is_valid():
+                message = form.save(commit=False)
+                message.sender = request.user
+                message.name = request.user
+                message.save()
+                messages.success(request, 'Your message has been sent')
+
+                return HttpResponseRedirect(reverse('accounts:inbox'))
+
+        return render(self.request, 'messages/message_form.html', {'form': form})
+
+
+class SendMessageFromProfileView(LoginRequiredMixin, View):
+
+    def get(self, request, pk):
+        recipient = get_object_or_404(User, pk=pk)
+        recipient.username = recipient
+        form = SendMessageFromProfile(initial={'recipient': recipient})
+        return render(request, 'messages/message_form.html', {'form': form})
+
+    def post(self, request, pk, *args, **kwargs):
+        recipient = get_object_or_404(User, pk=pk)
+        recipient.username = recipient
+
+        if request.method == 'POST':
+            form = SendMessageFromProfile(initial={'recipient': recipient}, data=self.request.POST)
+
+            if form.is_valid():
+                message = form.save(commit=False)
+                message.sender = request.user
+                message.name = request.user
+                form.instance.recipient = recipient
+                message.save()
+                messages.success(request, 'Your message has been sent')
+                return HttpResponseRedirect(reverse('accounts:bloggers_profile', kwargs={'pk': pk}))
+
+        form = SendMessageFromProfile()
+        return render(self.request, 'messages/message_form.html', {'form': form})
 
 
 class DeleteMessage(LoginRequiredMixin, DeleteView):
