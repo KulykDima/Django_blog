@@ -1,11 +1,16 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from .views import DeleteMessage, inbox, message_view, blogger_profile_view, SendMessageFromProfileView, CreateNewMessage
+from .views import CreateNewMessage
+from .views import DeleteMessage
+from .views import SendMessageFromProfileView
 from .views import UserLoginView
 from .views import UserLogoutView
 from .views import UserRegistrationView
 from .views import UserUpdateView
+from .views import blogger_profile_view
+from .views import inbox
+from .views import message_view
 from .views import send_activation_letter
 from .views import user_activate
 from .views import user_profile_view

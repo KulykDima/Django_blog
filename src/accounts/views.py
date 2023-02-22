@@ -1,5 +1,3 @@
-from django.views import View
-
 from accounts.apps import user_register
 from accounts.forms import ActivationLetterAgain, MessageForm, SendMessageFromProfile
 from accounts.forms import UserRegisterForm
@@ -16,6 +14,7 @@ from django.core.signing import BadSignature
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, DeleteView
 from django.views.generic import UpdateView
 
