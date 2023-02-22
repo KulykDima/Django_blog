@@ -152,7 +152,7 @@ class CreateNewMessage(LoginRequiredMixin, View):
                 message.sender = request.user
                 message.name = request.user
                 message.save()
-                messages.success(request, 'Your message has been sent')
+                messages.success(self.request, 'Your message has been sent')
 
                 return HttpResponseRedirect(reverse('accounts:inbox'))
 
@@ -180,7 +180,7 @@ class SendMessageFromProfileView(LoginRequiredMixin, View):
                 message.name = request.user
                 form.instance.recipient = recipient
                 message.save()
-                messages.success(request, 'Your message has been sent')
+                messages.success(self.request, 'Your message has been sent')
                 return HttpResponseRedirect(reverse('accounts:bloggers_profile', kwargs={'pk': pk}))
 
         form = SendMessageFromProfile()

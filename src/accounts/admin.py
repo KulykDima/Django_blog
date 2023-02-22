@@ -87,7 +87,6 @@ class MessagesFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        print(self.value())
         if self.value() == 'True':
             return Message.objects.filter(is_readed=True)
         if self.value() == 'False':
