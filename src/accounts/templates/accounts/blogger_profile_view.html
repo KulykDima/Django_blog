@@ -22,7 +22,7 @@
             <div class="px-4 pt-0 pb-4 bg-dark">
                 <div class="media align-items-end profile-header">
                     <div class="profile mr-3"><img class="rounded-circle p-1 m-1" width="150" height="150" src="{{ blogger.avatar.url }}"
-                         alt="avatar" align="right"><a href="{% url 'accounts:profile_update' %}" class="btn btn-outline-primary m-2">Edit profile</a></div>
+                         alt="avatar" align="right"><a href="{% url 'accounts:send_message_to_blogger' blogger.pk %}" class="btn btn-outline-primary m-2">Send message</a></div>
                     <div class="media-body mb-5 text-white">
                         <h4 class="mt-0 mb-0">{% if user.last_name %}{{ blogger.first_name }} {{ blogger.last_name }} {% else %} {{ blogger.username }} {% endif %}</h4>
                         <p class="small mb-1"> <i class="fa fa-map-marker mr-2"></i>City - {% if blogger.city %}{{ blogger.city }} {% else %} - {% endif %}</p>

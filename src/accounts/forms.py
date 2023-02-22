@@ -65,7 +65,7 @@ class UserRegisterForm(forms.ModelForm):
 class ActivationLetterAgain(forms.ModelForm):
     class Meta:
         model = get_user_model()
-        fields = ('email', )
+        fields = ('email',)
         exclude = (
             'username',
             'password1',
@@ -98,13 +98,28 @@ class MessageForm(forms.ModelForm):
         model = Message
         fields = [
             'recipient',
-            'name',
             'subject',
             'body',
         ]
 
     def __init__(self, *args, **kwargs):
         super(MessageForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'input'})
+
+
+class SendMessageFromProfile(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['recipient',
+                  'subject',
+                  'body'
+                  ]
+
+    def __init__(self, *args, **kwargs):
+        super(SendMessageFromProfile, self).__init__(*args, **kwargs)
+        self.fields['recipient'].initial = 'recipient'
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'input'})

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load crispy_forms_filters %}
+
 {% load static %}
 
 {% block content %}
@@ -7,22 +9,12 @@
 <main class="formPage my-xl">
     <div class="content-box">
         <div class="formWrapper">
-            <form class="form" method="POST">
+            <form method="post">
                 {% csrf_token %}
-                <h5>Write a message</h5>
-                <div class="form__field">
-                    <label for="formInput#text">To: {{ form.recipient }}</label>
-                </div>
-
-                <div class="form__field">
-                    <label for="formInput#text">Subject: {{ form.subject }}</label>
-                </div>
-
-                <div class="form__field">
-                    <label for="formInput#text">Text: {{ form.body }}</label>
-                </div>
-
-                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Отправить" />
+                <table>
+                    {{ form|crispy }}
+                </table>
+                <input align="center" class="btn btn-outline-primary" type="submit" value="Send message">
             </form>
         </div>
     </div>
