@@ -10,7 +10,9 @@ from .views import UserRegistrationView
 from .views import UserUpdateView
 from .views import blogger_profile_view
 from .views import inbox
-from .views import message_view
+from .views import incoming_message_view
+from .views import outbox
+from .views import outgoing_message_view
 from .views import send_activation_letter
 from .views import user_activate
 from .views import user_profile_view
@@ -28,7 +30,9 @@ urlpatterns = [
     path('profile/update/', UserUpdateView.as_view(), name='profile_update'),
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('profile/inbox', inbox, name='inbox'),
-    path('profile/message/<str:pk>', message_view, name='message'),
+    path('profile/outbox', outbox, name='outbox'),
+    path('profile/message/in/<str:pk>', incoming_message_view, name='message'),
+    path('profile/message/out/<str:pk>', outgoing_message_view, name='out_message'),
     path('profile/message/new_message/', CreateNewMessage.as_view(), name='create_message'),
     path('profile/inbox/delete_message/<slug:id>', DeleteMessage.as_view(), name='delete_message'),
     path('profiles/user/<int:pk>', blogger_profile_view, name='bloggers_profile'),

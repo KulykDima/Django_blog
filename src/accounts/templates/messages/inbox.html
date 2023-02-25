@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'message/css/message.css' %}">
 <main class="inbox my-xl">
   <div class="content-box">
-    <h3 class="inbox__title">Новые сообщения:(<span>{{count_of_unreaded}} | <a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg">Написать сообщение </a></span>)</h3>
+    <h3 class="inbox__title">Новые сообщения:(<span>{{count_of_unreaded}} | <a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg">Написать сообщение </a> | <a href="{% url 'accounts:outbox' %}" class="btn btn--sub btn--lg">Исходящие</a></span>)</h3>
 
     <ul class="messages">
       {% for message in messages %}
@@ -16,9 +16,9 @@
       <li class="message">
         {% endif %}
         <a href="{% url 'accounts:message' message.id %}">
-          <span class="message__author">{{message.sender}}</span>
-          <span class="message__subject">{{message.subject}}</span>
-          <span class="message__date">{{message.created}}</span>
+          <span class="message__author">From: {{message.sender}}</span>
+          <span class="message__subject">Subject: {{message.subject}}</span>
+          <span class="message__date">Date: {{message.created}}</span>
         <center><span><a class="btn btn-outline-primary m-2"
                            href="{% url 'accounts:delete_message' message.id %}">Delete message</a></span></center>
         </a>
