@@ -99,8 +99,7 @@ class UserLogoutView(LoginRequiredMixin, LogoutView):
 
 def user_profile_view(request):
     posts = Posts.objects.filter(author_id=request.user.pk).order_by('create_date')
-    return render(request, 'accounts/user_profile.html',
-                  {'posts': posts})
+    return render(request, 'accounts/user_profile.html', {'posts': posts})
 
 
 def blogger_profile_view(request, pk):
@@ -119,21 +118,41 @@ def blogger_profile_view(request, pk):
 
 @login_required
 def inbox(request):
-    user = request.user
-    messages = user.messages.all()
+    user = request.user.pk
+    messages = Message.objects.filter(recipient_id=user).select_related('recipient')
     count_of_unreaded = messages.filter(is_readed=False).count()
-    return render(request, 'messages/inbox.html', {'messages': messages, 'count_of_unreaded': count_of_unreaded})
+    return render(request, 'messages/inbox.html', {'messages': messages,
+                                                   'count_of_unreaded': count_of_unreaded}
+                  )
 
 
 @login_required
-def message_view(request, pk):
-    user = request.user
-    message = user.messages.get(id=pk)
+def outbox(request):
+    user = request.user.pk
+    sent_massages = Message.objects.filter(sender_id=user).select_related('sender')
+    return render(request, 'messages/outbox.html', {'sent_messages': sent_massages})
+
+
+@login_required
+def incoming_message_view(request, pk):
+    message = Message.objects.get(id=pk)
     if not message.is_readed:
         message.is_readed = True
         message.save()
 
     return render(request, 'messages/message.html', {'message': message})
+
+
+def outgoing_message_view(request, pk):
+    sent_massage = Message.objects.get(id=pk)
+    if sent_massage.is_readed:
+        sent_massage.is_readed = True
+        sent_massage.save()
+    if not sent_massage.is_readed:
+        sent_massage.is_readed = False
+        sent_massage.save()
+
+    return render(request, 'messages/out_message.html', {'sent_message': sent_massage})
 
 
 class CreateNewMessage(LoginRequiredMixin, View):

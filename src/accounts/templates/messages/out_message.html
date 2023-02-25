@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+        <link rel="stylesheet" type="text/css" href="{% static 'message/css/message.css' %}">
+    <link rel="script" type="text/css" href="{% static 'message/js/main.js' %}">
+<main class="messagePage my-xl">
+  <div class="content-box">
+    <div class="message">
+      <a class="backButton" href="{% url 'accounts:inbox' %}"><i class="im im-angle-left"></i></a>
+      <h3 class="message__subject"><strong>Subject: </strong>{{ sent_message.subject }}</h3>
+        <h3 class="message__author"><strong>Sender: </strong>{{ sent_message.sender }}</h3>
+            <h3 class="message__author"><strong>Recipient: </strong>{{ sent_message.recipient }}</h3>
+
+
+        <p class="message__date"><strong>Date: </strong>{{ sent_message.created }}</p>
+        <div class="message__body"><strong>Body: </strong>{{ sent_message.body|linebreaksbr }}</div>
+        <div align="center">
+                <a class="btn btn-outline-primary m-2" href="{% url 'accounts:outbox' %}">Back to outbox</a>
+    </div>
+
+        </div>
+
+  </div>
+</main>
+{% endblock content %}

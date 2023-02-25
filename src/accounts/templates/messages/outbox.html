@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'message/css/message.css' %}">
+<main class="inbox my-xl">
+  <div class="content-box">
+        {% if sent_messages %}
+            <h3 class="inbox__title">Отправленные сообщения:<span><a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg"> Написать сообщение </a> | <a href="{% url 'accounts:inbox' %}" class="btn btn--sub btn--lg">Входящие</a></span>)</h3>
+  <ul class="messages">
+      {% for sent_message in sent_messages %}
+      <li class="message">
+        <a href="{% url 'accounts:out_message' sent_message.id %}">
+          <span class="message__author">To: {{sent_message.recipient}}</span>
+          <span class="message__subject">Subject: {{sent_message.subject}}</span>
+          <span class="message__date">Date: {{sent_message.created}}</span>
+
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+      <h3 class="inbox__title">Отправленных сообщений нет</h3>
+  {% endif %}
+  </div>
+</main>
+
+{% endblock content %}
