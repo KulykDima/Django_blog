@@ -203,10 +203,11 @@ class DeletePost(LoginRequiredMixin, DeleteView):
         return self.model.objects.get(uuid=uuid)
 
     def form_valid(self, form):
-        success_url = reverse_lazy('posts:list')
+        uuid = self.kwargs.get('uuid')
+        no_permission_url = reverse('posts:detail', kwargs={'uuid': uuid})
         if self.object.author != self.request.user:
             messages.error(self.request, self.error_message)
-            return HttpResponseRedirect(success_url)
+            return HttpResponseRedirect(no_permission_url)
 
         self.object.delete()
         messages.success(self.request, self.success_message)

@@ -9,18 +9,18 @@
     <h3 class="inbox__title">Новые сообщения:(<span>{{count_of_unreaded}} | <a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg">Написать сообщение </a> | <a href="{% url 'accounts:outbox' %}" class="btn btn--sub btn--lg">Исходящие</a></span>)</h3>
 
     <ul class="messages">
-      {% for message in messages %}
-      {% if message.is_read == False %}
+      {% for pm in pms %}
+      {% if pm.is_read == False %}
       <li class="message message--unread">
         {% else %}
       <li class="message">
         {% endif %}
-        <a href="{% url 'accounts:message' message.id %}">
-          <span class="message__author">From: {{message.sender}}</span>
-          <span class="message__subject">Subject: {{message.subject}}</span>
-          <span class="message__date">Date: {{message.created}}</span>
+        <a href="{% url 'accounts:message' pm.id %}">
+          <span class="message__author">From: {{pm.sender}}</span>
+          <span class="message__subject">Subject: {{pm.subject}}</span>
+          <span class="message__date">Date: {{pm.created}}</span>
         <center><span><a class="btn btn-outline-primary m-2"
-                           href="{% url 'accounts:delete_message' message.id %}">Delete message</a></span></center>
+                           href="{% url 'accounts:delete_message' pm.id %}">Delete message</a></span></center>
         </a>
       </li>
       {% endfor %}
