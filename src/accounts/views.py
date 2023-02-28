@@ -119,9 +119,9 @@ def blogger_profile_view(request, pk):
 @login_required
 def inbox(request):
     user = request.user.pk
-    messages = Message.objects.filter(recipient_id=user).select_related('recipient')
-    count_of_unreaded = messages.filter(is_readed=False).count()
-    return render(request, 'messages/inbox.html', {'messages': messages,
+    pms = Message.objects.filter(recipient_id=user).select_related('recipient')
+    count_of_unreaded = pms.filter(is_readed=False).count()
+    return render(request, 'messages/inbox.html', {'pms': pms,
                                                    'count_of_unreaded': count_of_unreaded}
                   )
 
@@ -135,14 +135,15 @@ def outbox(request):
 
 @login_required
 def incoming_message_view(request, pk):
-    message = Message.objects.get(id=pk)
-    if not message.is_readed:
-        message.is_readed = True
-        message.save()
+    private_message = Message.objects.get(id=pk)
+    if not private_message.is_readed:
+        private_message.is_readed = True
+        private_message.save()
 
-    return render(request, 'messages/message.html', {'message': message})
+    return render(request, 'messages/message.html', {'private_message': private_message})
 
 
+@login_required
 def outgoing_message_view(request, pk):
     sent_massage = Message.objects.get(id=pk)
     if sent_massage.is_readed:
@@ -216,4 +217,4 @@ class DeleteMessage(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         messages.success(self.request, self.success_message)
-        return reverse('index')
+        return reverse('accounts:inbox')

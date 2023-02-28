@@ -9,15 +9,15 @@
   <div class="content-box">
     <div class="message">
       <a class="backButton" href="{% url 'accounts:inbox' %}"><i class="im im-angle-left"></i></a>
-      <h3 class="message__subject"><strong>Subject: </strong>{{ message.subject }}</h3>
-        {% if message.sender %}
-        <h3 class="message__author"><strong>Sender: </strong>{{ message.sender }}</h3>
-            <h3 class="message__author"><strong>Recipient: </strong>{{ message.recipient }}</h3>
+      <h3 class="message__subject"><strong>Subject: </strong>{{ private_message.subject }}</h3>
+        {% if private_message.sender %}
+        <h3 class="message__author"><strong>Sender: </strong>{{ private_message.sender }}</h3>
+            <h3 class="message__author"><strong>Recipient: </strong>{{ private_message.recipient }}</h3>
         {% else %}
-        <p class="message__author"><strong>Name: </strong>{{ message.name }}</p>
+        <p class="message__author"><strong>Name: </strong>{{ private_message.name }}</p>
         {% endif %}
-        <p class="message__date"><strong>Date: </strong>{{ message.created }}</p>
-        <div class="message__body"><strong>Body: </strong>{{ message.body|linebreaksbr }}</div>
+        <p class="message__date"><strong>Date: </strong>{{ private_message.created }}</p>
+        <div class="message__body"><strong>Body: </strong>{{ private_message.body|linebreaksbr }}</div>
     <div align="center">
                 <a class="btn btn-outline-primary m-2" href="{% url 'accounts:inbox' %}">Back to inbox</a>
     </div>
