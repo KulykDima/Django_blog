@@ -22,38 +22,22 @@ class UserPostsTabular(admin.TabularInline):
         return False
 
 
-class ActivatedFilter(admin.SimpleListFilter):
-    title = 'Activated Filter'
-    parameter_name = 'activated_filter'
+class UsersTitleFilter(admin.SimpleListFilter):
+    title = 'Users Filter'
+    parameter_name = 'users_filter'
 
     def lookups(self, request, model_admin):
         users = User.objects.all()
-        lst = [(user.is_activated, user.is_activated) for user in users]
+        lst = [(user.username[0].title(), user.username[0].title()) for user in users]
         return tuple(sorted(set(lst)))
 
     def queryset(self, request, queryset):
+        print(self.value())
         match self.value():
             case None:
                 return User.objects.all()
             case _:
-                return User.objects.filter(is_activated=(self.value()))
-
-
-class StaffFilter(admin.SimpleListFilter):
-    title = 'Staff Filter'
-    parameter_name = 'staff_filter'
-
-    def lookups(self, request, model_admin):
-        users = User.objects.all()
-        lst = [(user.is_staff, user.is_staff) for user in users]
-        return tuple(sorted(set(lst)))
-
-    def queryset(self, request, queryset):
-        match self.value():
-            case None:
-                return User.objects.all()
-            case _:
-                return User.objects.filter(is_staff=self.value())
+                return User.objects.filter(username__istartswith=str(self.value()[0]))
 
 
 @admin.register(User)
@@ -69,7 +53,10 @@ class UserAdmin(admin.ModelAdmin):
     )
 
     readonly_fields = ('last_login', 'date_joined', 'avatar_img', )
-    list_filter = (StaffFilter, ActivatedFilter)
+    list_filter = (UsersTitleFilter,
+                   ('is_activated', admin.BooleanFieldListFilter),
+                   ('is_staff', admin.BooleanFieldListFilter)
+                   )
     inlines = [UserPostsTabular, ]
 
     def avatar_img(self, obj):
@@ -114,4 +101,10 @@ class SenderFilter(admin.SimpleListFilter):
 class AdminMessage(admin.ModelAdmin):
     list_display = ('name', 'subject', 'sender', 'recipient', 'is_readed',)
     readonly_fields = ('is_readed', )
+    fieldsets = (
+        ('Contacts', {'fields': (('sender', 'recipient',),)}),
+        ('Subject', {'fields': ('subject', 'name')}),
+        ('Subject', {'fields': ('body', )}),
+        ('Status', {'fields': ('is_readed', )})
+    )
     list_filter = (SenderFilter, MessagesFilter)

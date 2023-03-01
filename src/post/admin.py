@@ -1,3 +1,4 @@
+
 from django.contrib import admin
 
 from post.models import Comment
@@ -37,7 +38,7 @@ class PostsFilter(admin.SimpleListFilter):
             case None:
                 return Posts.objects.all()
             case _:
-                return Posts.objects.filter(title__istartswith=str(self.value()[0]))
+                return Posts.objects.filter(title__istartswith=str(self.value()))
 
 
 @admin.register(Posts)
@@ -50,7 +51,7 @@ class AdminPost(admin.ModelAdmin):
     )
 
     readonly_fields = ('create_date', 'like', 'dislike', )
-    list_filter = (PostsFilter, )
+    list_filter = (PostsFilter, 'author', )
     inlines = [CommentsTabularInline, ]
 
 
