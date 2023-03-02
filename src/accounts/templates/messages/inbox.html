@@ -6,10 +6,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'message/css/message.css' %}">
 <main class="inbox my-xl">
   <div class="content-box">
-    <h3 class="inbox__title">Новые сообщения:(<span>{{count_of_unreaded}} | <a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg">Написать сообщение </a> | <a href="{% url 'accounts:outbox' %}" class="btn btn--sub btn--lg">Исходящие</a></span>)</h3>
+    <h3 class="inbox__title">Новые сообщения:(<span>{{count_of_unread}} | <a href="{% url 'accounts:create_message' %}" class="btn btn--sub btn--lg">Написать сообщение </a> | <a href="{% url 'accounts:outbox' %}" class="btn btn--sub btn--lg">Исходящие</a></span>)</h3>
 
     <ul class="messages">
-      {% for pm in pms %}
+      {% for pm in message_list %}
       {% if pm.is_read == False %}
       <li class="message message--unread">
         {% else %}

@@ -74,7 +74,6 @@ class PostDetail(LoginRequiredMixin, DetailView, MultipleObjectMixin):
         context['dislikeusers'] = self.get_object().dislike.prefetch_related('dislikes__dislike')
         context['comments'] = self.get_object().comments.prefetch_related('post').order_by('-created')
         context['comments'] = Paginator(context['comments'], 4).get_page(page)
-        print(context)
         return context
 
     def post(self, request, uuid, *args, **kwargs):

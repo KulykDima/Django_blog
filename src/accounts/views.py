@@ -7,7 +7,6 @@ from accounts.utils import signer
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.signing import BadSignature
@@ -15,7 +14,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, DeleteView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView
 from django.views.generic import UpdateView
 
 from post.models import Posts
@@ -97,63 +96,81 @@ class UserLogoutView(LoginRequiredMixin, LogoutView):
         return response
 
 
-def user_profile_view(request):
-    posts = Posts.objects.filter(author_id=request.user.pk).order_by('create_date')
-    return render(request, 'accounts/user_profile.html', {'posts': posts})
+class UserProfile(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'accounts/user_profile.html'
+
+    def get_object(self, queryset=None):
+        pk = self.request.user.pk
+        return self.model.objects.get(pk=pk)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['posts'] = Posts.objects.filter(author_id=self.request.user.pk).order_by('create_date')
+
+        return context
 
 
-def blogger_profile_view(request, pk):
-    blogger = get_object_or_404(User, pk=pk)
-    posts = Posts.objects.filter(author_id=pk).order_by('create_date')
-    likes = User.objects.filter(
-        likes__author=pk).prefetch_related('likes')
-    dislikes = User.objects.filter(
-        dislikes__author=pk).prefetch_related('dislikes')
-    return render(request, 'accounts/blogger_profile_view.html',
-                  {'blogger': blogger,
-                   'posts': posts,
-                   'likes': likes,
-                   'dislikes': dislikes})
+class BloggerProfileView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'accounts/blogger_profile_view.html'
+    context_object_name = 'blogger'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['likes'] = User.objects.filter(likes__author=self.kwargs['pk']).prefetch_related('likes')
+        context['dislikes'] = User.objects.filter(dislikes__author=self.kwargs['pk']).prefetch_related('dislikes')
+        context['posts'] = Posts.objects.filter(author_id=self.kwargs['pk']).select_related('author')
+
+        return context
 
 
-@login_required
-def inbox(request):
-    user = request.user.pk
-    pms = Message.objects.filter(recipient_id=user).select_related('recipient')
-    count_of_unreaded = pms.filter(is_readed=False).count()
-    return render(request, 'messages/inbox.html', {'pms': pms,
-                                                   'count_of_unreaded': count_of_unreaded}
-                  )
+class Inbox(LoginRequiredMixin, ListView):
+    model = Message
+    template_name = 'messages/inbox.html'
+
+    def get_queryset(self):
+        queryset = Message.objects.filter(recipient_id=self.request.user.pk).select_related('recipient')
+
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(Inbox, self).get_context_data(**kwargs)
+        context['count_of_unread'] = self.get_queryset().filter(is_readed=False).count()
+
+        return context
 
 
-@login_required
-def outbox(request):
-    user = request.user.pk
-    sent_massages = Message.objects.filter(sender_id=user).select_related('sender')
-    return render(request, 'messages/outbox.html', {'sent_messages': sent_massages})
+class Outbox(LoginRequiredMixin, ListView):
+    model = Message
+    template_name = 'messages/outbox.html'
+
+    def get_queryset(self):
+        queryset = Message.objects.filter(sender_id=self.request.user.pk).select_related('sender').order_by('-created')
+
+        return queryset
 
 
-@login_required
-def incoming_message_view(request, pk):
-    private_message = Message.objects.get(id=pk)
-    if not private_message.is_readed:
-        private_message.is_readed = True
-        private_message.save()
+class IncomingMessage(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        private_message = Message.objects.get(id=pk)
+        if not private_message.is_readed:
+            private_message.is_readed = True
+            private_message.save()
+        return render(self.request, 'messages/message.html', {'private_message': private_message})
 
-    return render(request, 'messages/message.html', {'private_message': private_message})
 
+class OutgoingMessage(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        sent_massage = Message.objects.get(id=pk)
+        if sent_massage.is_readed:
+            sent_massage.is_readed = True
+            sent_massage.save()
+        if not sent_massage.is_readed:
+            sent_massage.is_readed = False
+            sent_massage.save()
 
-@login_required
-def outgoing_message_view(request, pk):
-    sent_massage = Message.objects.get(id=pk)
-    if sent_massage.is_readed:
-        sent_massage.is_readed = True
-        sent_massage.save()
-    if not sent_massage.is_readed:
-        sent_massage.is_readed = False
-        sent_massage.save()
-
-    return render(request, 'messages/out_message.html', {'sent_message': sent_massage})
+        return render(request, 'messages/out_message.html', {'sent_message': sent_massage})
 
 
 class CreateNewMessage(LoginRequiredMixin, View):
