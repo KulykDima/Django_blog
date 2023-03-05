@@ -1,14 +1,13 @@
-from accounts.forms import UserRegisterForm, MessageForm
+from accounts.forms import MessageForm, UserRegisterForm
+from accounts.models import User
 
 from django.test import TestCase
-
-from accounts.models import User
 
 
 class TestForms(TestCase):
     def setUp(self):
         self.username = 'Dima'
-        self.password = 'Dimo4ka201'
+        self.password = 'Dimo4ka22222'
         self.email = 'Dima111@gmail.com'
 
     def test_register_form_valid_data(self):

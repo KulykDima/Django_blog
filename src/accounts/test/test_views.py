@@ -1,4 +1,4 @@
-from accounts.models import User
+from accounts.models import Message, User
 
 from django.core.signing import Signer
 from django.test import Client
@@ -67,16 +67,17 @@ class TestViews(TestCase):
 
 class TestLogin(TestCase):
     def setUp(self):
-        test_user1 = User.objects.create_user(username='user_1', password='Dimo4ka201')
+        test_user1 = User.objects.create_user(username='user_1', password='Dimo4ka22222')
         test_user1.save()
-        test_user2 = User.objects.create_user(username='user_2', password='Dimo4ka201')
+        test_user2 = User.objects.create_user(username='user_2', password='Dimkaaaaa2')
         test_user2.save()
+        self.message = Message.objects.create(sender=test_user1, recipient=test_user2, subject='none', body='123')
 
     def test_logged_in_uses_correct_template(self):
-        login = self.client.login(username='user_1', password='Dimo4ka201')
+        login = self.client.login(username='user_1', password='Dimo4ka22222')    # noqa
         response = self.client.get(reverse('index'))
 
-        login_data = {'username': 'user_1', 'password': 'Dimo4ka201'}
+        login_data = {'username': 'user_1', 'password': 'Dimo4ka22222'}
         index = reverse('index')
         login_post_data = self.client.post((reverse('accounts:login')), login_data)
 
@@ -88,10 +89,25 @@ class TestLogin(TestCase):
         blogger = User.objects.get(id=1)
         response_1 = self.client.get(reverse('accounts:profile'))
         response_2 = self.client.get(reverse('posts:blogger_detail', kwargs={'pk': blogger.pk}))
+        response_3 = self.client.get(reverse('accounts:inbox'))
 
         self.assertRedirects(response_1, '/accounts/login/?next=%2Faccounts%2Fprofile%2F')
         self.assertRedirects(response_2, '/accounts/login/?next=%2Fposts%2Fbloggers%2Fblogger%2F1',
                              status_code=302,
                              target_status_code=200)
+        self.assertRedirects(response_3, '/accounts/login/?next=/accounts/profile/inbox',
+                             status_code=302,
+                             target_status_code=200)
 
+    def test_delete_message(self):
+        login = self.client.login(username='user_1', password='Dimo4ka22222')    # noqa
+        response = self.client.post(reverse('accounts:delete_message', kwargs={'id': self.message.id}))
+        inbox = reverse('accounts:inbox')
 
+        self.assertRedirects(response, inbox, status_code=302, target_status_code=200)
+
+    def test_logout_uses_correct_template(self):
+        login = self.client.login(username='user_1', password='Dimo4ka22222')  # noqa
+        logout = self.client.post(reverse('accounts:logout'))
+
+        self.assertEqual(logout.status_code, 200)
