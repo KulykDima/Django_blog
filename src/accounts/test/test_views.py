@@ -72,6 +72,7 @@ class TestLogin(TestCase):
         test_user2 = User.objects.create_user(username='user_2', password='Dimkaaaaa2')
         test_user2.save()
         self.message = Message.objects.create(sender=test_user1, recipient=test_user2, subject='none', body='123')
+        self.client = Client()
 
     def test_logged_in_uses_correct_template(self):
         login = self.client.login(username='user_1', password='Dimo4ka22222')    # noqa

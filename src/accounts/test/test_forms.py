@@ -1,4 +1,4 @@
-from accounts.forms import MessageForm, UserRegisterForm
+from accounts.forms import MessageForm, UserRegisterForm, UserUpdateForm
 from accounts.models import User
 
 from django.test import TestCase
@@ -26,8 +26,20 @@ class TestForms(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(len(form.errors), 4)
 
+    def test_user_update_form(self):
+        form = UserUpdateForm(
+            data={
+                'username': self.username,
+                'email': 'Dimka20101@gmail.com',
+                'first_name': str('Dima'),
+                'last_name': str('Kulyk')
+            }
+        )
 
-class TestMessage(TestCase):
+        self.assertTrue(form.is_valid())
+
+
+class TestMessageForm(TestCase):
     username = None
 
     @classmethod

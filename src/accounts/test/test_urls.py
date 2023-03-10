@@ -55,14 +55,16 @@ class TestUrlsWithKwargs(TestCase):
             is_activated=True
         )
 
-    def setUp(self):
-        self.user = User.objects.get(username=self.username)
-        self.incoming_message = Message.objects.create(
-            sender=self.user,
-            recipient=self.user,
+        Message.objects.create(
+            sender=User.objects.get(username=cls.username),
+            recipient=User.objects.get(username=cls.username),
             subject='123',
             body='123'
         )
+
+    def setUp(self):
+        self.user = User.objects.get(username=self.username)
+        self.incoming_message = Message.objects.get(sender=self.user, recipient=self.user)
 
     def test_blogger_view_url_resolves(self):
         url = reverse('accounts:bloggers_profile', kwargs={'pk': self.user.pk})
