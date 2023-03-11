@@ -1,4 +1,3 @@
-from accounts.models import Message, User
 from accounts.views import BloggerProfileView
 from accounts.views import CreateNewMessage
 from accounts.views import Inbox
@@ -41,42 +40,18 @@ class TestUrls(SimpleTestCase):
 
 
 class TestUrlsWithKwargs(TestCase):
-    username = None
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.username = 'user_1'
-
-        User.objects.create(
-            username=cls.username,
-            password='1234Qwerty',
-            email='user_1@test.com',
-            first_name='Dimitriy',
-            is_activated=True
-        )
-
-        Message.objects.create(
-            sender=User.objects.get(username=cls.username),
-            recipient=User.objects.get(username=cls.username),
-            subject='123',
-            body='123'
-        )
-
-    def setUp(self):
-        self.user = User.objects.get(username=self.username)
-        self.incoming_message = Message.objects.get(sender=self.user, recipient=self.user)
 
     def test_blogger_view_url_resolves(self):
-        url = reverse('accounts:bloggers_profile', kwargs={'pk': self.user.pk})
+        url = reverse('accounts:bloggers_profile', kwargs={'pk': 1})
 
         self.assertEqual(resolve(url).func.view_class, BloggerProfileView)
 
     def test_incoming_message_view_url_resolves(self):
-        url = reverse('accounts:message', kwargs={'pk': self.incoming_message.pk})
+        url = reverse('accounts:message', kwargs={'pk': 1})
 
         self.assertEqual(resolve(url).func.view_class, IncomingMessage)
 
     def test_outgoing_message_view_url_resolves(self):
-        url = reverse('accounts:out_message', kwargs={'pk': self.incoming_message.pk})
+        url = reverse('accounts:out_message', kwargs={'pk': 1})
 
         self.assertEqual(resolve(url).func.view_class, OutgoingMessage)
