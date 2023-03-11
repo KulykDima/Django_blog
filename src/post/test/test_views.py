@@ -1,6 +1,6 @@
 from accounts.models import User
 
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from post.models import Posts
@@ -40,7 +40,7 @@ class TestPosts(TestCase):
         self.assertTemplateUsed(response, 'list_of_posts.html')
 
     def test_create_post_view(self):
-        login = self.client.login(username='Dima', password='1234Qwerty')
+        login = self.client.login(username='Dima', password='1234Qwerty')   # noqa
         response = self.client.post(reverse('posts:create'))
 
         form_data = {'title': '123', 'author': self.user, 'text': '123'}
