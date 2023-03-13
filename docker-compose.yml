@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: web_service
+    command: gunicorn app.wsgi:application --workers 4 --bind 0.0.0.0:8890
+    volumes:
+      - static_volume:/opt/src/static
+      - media_volume:/opt/src/media
+    ports:
+      - "8890:8890"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail -s http://localhost:8890/ || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    restart: always
+
+  db:
+    image: postgres:12.0-alpine
+    container_name: db_service
+    volumes:
+      - db_data_volume:/var/lib/postgresql/data/
+    ports:
+      - "5435:5432"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      retries: 5
+    restart: always
+
+  nginx:
+    build: ./nginx
+    container_name: nginx_service
+    volumes:
+      - static_volume:/opt/src/static
+      - media_volume:/opt/src/media
+    ports:
+      - "80:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ 'CMD', '/usr/src/healthcheck.sh' ]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+    restart: always
+
+volumes:
+  db_data_volume:
+    name: db_data
+  static_volume:
+    name: static_data
+  media_volume:
+    name: media_data
+  src_volume:
+    name: source_code
