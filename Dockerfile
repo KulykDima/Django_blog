@@ -18,7 +18,7 @@ RUN rm requirements-dev.txt
 
 COPY src .
 # COPY .env ../.env
-COPY ./dump.json .
+COPY ./src/dump.json .
 
 EXPOSE 8890
 
