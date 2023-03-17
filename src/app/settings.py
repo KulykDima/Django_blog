@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from os import environ
 from pathlib import Path
 
+from celery.schedules import crontab
+
 from django.urls import reverse_lazy
 
 from dotenv import load_dotenv
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'accounts.apps.AccountsConfig',
     'post.apps.PostConfig',
+    'task.apps.TaskConfig',
 
 ]
 
@@ -167,3 +170,21 @@ LOGIN_REDIRECT_URL = reverse_lazy('index')
 
 if DEBUG:
     SHELL_PLUS_PRINT_SQL = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SERVER_EMAIL = 'noreply@test.com'
+ADMINS = [('admin', 'admin@test.com'), ]
+
+CELERY_BROKER_URL = environ['CELERY_BROKER']
+CELERY_RESULT_BACKEND = environ['CELERY_BACKEND']
+
+CELERY_BEAT_SCHEDULE = {
+    'simple_task': {
+        'task': 'post.tasks.simple_task',
+        'schedule': crontab(minute='*/1')
+    },
+    'send_email_report': {
+        'task': 'post.tasks.send_email_report',
+        'schedule': crontab(minute='*/2')
+    },
+}

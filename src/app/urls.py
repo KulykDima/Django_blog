@@ -18,12 +18,18 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 
+from task.views import home, get_status, run_task
+
 urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('posts/', include('post.urls')),
+    
+    path('home/', home, name='task_home'),
+    path('tasks/<task_id>/', get_status, name='get_status'),
+    path('tasks/', run_task, name='run_task')
 ]
 
 
