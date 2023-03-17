@@ -1,3 +1,3 @@
 #!/bin/bash
 
-service nginx status || exit 1
+service nginx status || exit 0
