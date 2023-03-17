@@ -55,49 +55,6 @@ services:
       retries: 3
     restart: always
 
-  broker:
-    image: rabbitmq:3.9.12-alpine
-    container_name: broker_service
-    volumes:
-      - rabbit_volume:/var/lib/rabbitmq
-    ports:
-      - "5672:5672"
-    env_file:
-      - .env
-    restart: always
-
-  worker: # celery
-    build: .
-    container_name: worker_service
-    command: sh -c "celery -A app worker --concurrency=20 --loglevel=info"
-    volumes:
-      - src_volume:/opt/src
-    env_file:
-      - .env
-    depends_on:
-      - broker
-      - backend
-
-  scheduler: # celery_beat - CRON
-    build: .
-    container_name: scheduler_service
-    command: sh -c "celery -A app beat -l info"
-    volumes:
-      - src_volume:/opt/src
-    env_file:
-      - .env
-    depends_on:
-      - broker
-      - backend
-
-  backend:
-    image: redis:6.2.6-alpine
-    container_name: backend_service
-    volumes:
-      - redis_volume:/data
-    ports:
-      - "6379:6379"
-
 volumes:
   db_data_volume:
     name: db_data
@@ -107,7 +64,3 @@ volumes:
     name: media_data
   src_volume:
     name: source_code
-  rabbit_volume:
-    name: rabbit_data
-  redis_volume:
-    name: redis_volume
