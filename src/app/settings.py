@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'post.apps.PostConfig',
     'task.apps.TaskConfig',
+    'django.contrib.sites.apps.SitesConfig',
 
 ]
 
@@ -66,7 +67,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -171,8 +171,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('index')
 if DEBUG:
     SHELL_PLUS_PRINT_SQL = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-SERVER_EMAIL = 'noreply@test.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ADMINS = [('admin', 'admin@test.com'), ]
 
 CELERY_BROKER_URL = environ['CELERY_BROKER']
@@ -188,3 +187,13 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute='*/2')
     },
 }
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
+EMAIL_PORT = '587'
+EMAIL_SERVER = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SITE_ID = 1
+EMAIL_ADMIN = ['bbbbbbbb@bk.com']
