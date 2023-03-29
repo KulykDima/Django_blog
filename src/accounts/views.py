@@ -1,4 +1,4 @@
-from accounts.forms import MessageForm, SendMessageFromProfile
+from accounts.forms import ActivationLetterAgain, MessageForm, SendMessageFromProfile
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
 from accounts.models import Message, User
@@ -77,7 +77,7 @@ class EmailNotConfirmedView(TemplateView):
         context['title'] = 'Troubles with the activation'
         return context
 
-# Отправка сообщения localhost в консоль
+
 # def send_activation_letter(request):
 #     form = None
 #     if request.method == 'GET':
@@ -89,11 +89,33 @@ class EmailNotConfirmedView(TemplateView):
 #         form = ActivationLetterAgain(request.POST)
 #         if user.is_activated:
 #             return render(request, 'accounts/user_is_activated.html')
-#         user_register.send(None, instance=user)
+#         send_activate_email_message_task.delay(user.id)
 #         return render(request, 'accounts/user_register_done.html')
-#     return render(request, 'accounts/email_activate.html', {'form': form})
+#     return render(request, 'accounts/resend_email_activate.html', {'form': form})
 
 
+class SendConfirmationLetterAgain(View):
+    def get(self, request):
+        form = ActivationLetterAgain()
+        return render(self.request, 'accounts/resend_email_activate.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = ActivationLetterAgain()
+
+        if request.method == 'POST':
+            form = ActivationLetterAgain(data=self.request.POST)
+            if form.is_valid():
+                username = request.POST.get('email')
+                user = get_object_or_404(get_user_model(), email=username)
+                if user.is_activated:
+                    return render(self.request, 'accounts/user_is_activated.html')
+                send_activate_email_message_task.delay(user.id)
+                return render(self.request, 'accounts/user_register_done.html')
+
+        return render(self.request, 'accounts/resend_email_activate.html', {'form': form})
+
+
+# Отправка сообщения localhost в консоль
 # def user_activate(request, sign):
 #     try:
 #         username = signer.unsign(sign)
