@@ -5,9 +5,9 @@ from django.core.management import BaseCommand
 from django.utils import timezone
 from django.utils.timezone import make_aware
 
-from prettytable import PrettyTable
-
 from post.models import Posts
+
+from prettytable import PrettyTable
 
 
 class Command(BaseCommand):

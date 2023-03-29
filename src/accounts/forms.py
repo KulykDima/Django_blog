@@ -5,7 +5,6 @@ from django.contrib.auth.forms import UserChangeForm
 from django.core.exceptions import ValidationError
 from django.forms import widgets
 
-from .apps import user_register
 from .models import Message
 
 
@@ -47,8 +46,6 @@ class UserRegisterForm(forms.ModelForm):
 
         if commit:
             user.save()
-
-        user_register.send(UserRegisterForm, instance=user)
 
         return user
 

@@ -1,9 +1,11 @@
 from django.urls import path
-from django.views.generic import TemplateView
 
-from .views import BloggerProfileView
+from .views import BloggerProfileView, UserConfirmEmailView
 from .views import CreateNewMessage
 from .views import DeleteMessage
+from .views import EmailConfirmationSentView
+from .views import EmailConfirmedView
+from .views import EmailNotConfirmedView
 from .views import Inbox
 from .views import IncomingMessage
 from .views import Outbox
@@ -14,16 +16,14 @@ from .views import UserLogoutView
 from .views import UserProfile
 from .views import UserRegistrationView
 from .views import UserUpdateView
-from .views import send_activation_letter
-from .views import user_activate
 
 app_name = 'accounts'
 
 urlpatterns = [
-    path('register/activate/<str:sign>/', user_activate, name='register_activate'),
-    path('register/activate_again/', send_activation_letter, name='activation_again'),
-    path('register/done/', TemplateView.as_view(template_name='accounts/user_register_done.html'),
-         name='register_done'),
+    path('register/done/', EmailConfirmationSentView.as_view(), name='register_done'),
+    path('confirm-email/<str:uidb64>/<str:token>/', UserConfirmEmailView.as_view(), name='confirm_email'),
+    path('email-confirmed/', EmailConfirmedView.as_view(), name='email_confirmed'),
+    path('email-not-confirmed/', EmailNotConfirmedView.as_view, name='email_not_confirmed'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
     path('profile/', UserProfile.as_view(), name='profile'),

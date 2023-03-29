@@ -1,20 +1,20 @@
-from accounts.apps import user_register
-from accounts.forms import ActivationLetterAgain, MessageForm, SendMessageFromProfile
+from accounts.forms import MessageForm, SendMessageFromProfile
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
 from accounts.models import Message, User
-from accounts.utils import signer
+from accounts.tasks import send_activate_email_message_task
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.signing import BadSignature
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils.http import urlsafe_base64_decode
 from django.views import View
-from django.views.generic import CreateView, DeleteView, DetailView, ListView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView
 from django.views.generic import UpdateView
 
 from post.models import Posts
@@ -23,42 +23,93 @@ from post.models import Posts
 class UserRegistrationView(CreateView):
     model = get_user_model()
     template_name = 'accounts/user_register.html'
-    success_url = reverse_lazy('accounts:register_done')
+    success_url = reverse_lazy('index')
     form_class = UserRegisterForm
 
-
-def send_activation_letter(request):
-    form = None
-    if request.method == 'GET':
-        form = ActivationLetterAgain()
-
-    if request.method == 'POST':
-        username = request.POST.get('email')
-        user = get_object_or_404(get_user_model(), email=username)
-        form = ActivationLetterAgain(request.POST)
-        if user.is_activated:
-            return render(request, 'accounts/user_is_activated.html')
-        user_register.send(None, instance=user)
-        return render(request, 'accounts/user_register_done.html')
-    return render(request, 'accounts/email_activate.html', {'form': form})
-
-
-def user_activate(request, sign):
-    try:
-        username = signer.unsign(sign)
-    except BadSignature:
-        return render(request, 'accounts/bad_signature.html')
-
-    user = get_object_or_404(get_user_model(), username=username)
-    if user.is_activated:
-        return render(request, 'accounts/user_is_activated.html')
-    else:
-        template = 'accounts/user_activation_done.html'
-        user.is_activated = True
-        user.is_active = True
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.is_active = False
         user.save()
+        send_activate_email_message_task.delay(user.id)
+        return redirect('accounts:register_done')
 
-    return render(request, template)
+
+class EmailConfirmationSentView(TemplateView):
+    template_name = 'accounts/user_register_done.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Letter confirmation has been sent'
+        return context
+
+
+class UserConfirmEmailView(View):
+    def get(self, request, uidb64, token):
+        try:
+            uid = urlsafe_base64_decode(uidb64)
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.is_activated = True
+            user.save()
+            return redirect('accounts:email_confirmed')
+        else:
+            return redirect('accounts:email_not_confirmed')
+
+
+class EmailConfirmedView(TemplateView):
+    template_name = 'accounts/user_activation_done.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Your account has been activated'
+        return context
+
+
+class EmailNotConfirmedView(TemplateView):
+    template_name = 'accounts/bad_signature.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Troubles with the activation'
+        return context
+
+# Отправка сообщения localhost в консоль
+# def send_activation_letter(request):
+#     form = None
+#     if request.method == 'GET':
+#         form = ActivationLetterAgain()
+#
+#     if request.method == 'POST':
+#         username = request.POST.get('email')
+#         user = get_object_or_404(get_user_model(), email=username)
+#         form = ActivationLetterAgain(request.POST)
+#         if user.is_activated:
+#             return render(request, 'accounts/user_is_activated.html')
+#         user_register.send(None, instance=user)
+#         return render(request, 'accounts/user_register_done.html')
+#     return render(request, 'accounts/email_activate.html', {'form': form})
+
+
+# def user_activate(request, sign):
+#     try:
+#         username = signer.unsign(sign)
+#     except BadSignature:
+#         return render(request, 'accounts/bad_signature.html')
+#
+#     user = get_object_or_404(get_user_model(), username=username)
+#     if user.is_activated:
+#         return render(request, 'accounts/user_is_activated.html')
+#     else:
+#         template = 'accounts/user_activation_done.html'
+#         user.is_activated = True
+#         user.is_active = True
+#         user.save()
+#
+#     return render(request, template)
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
