@@ -10,6 +10,7 @@ from .views import Inbox
 from .views import IncomingMessage
 from .views import Outbox
 from .views import OutgoingMessage
+from .views import SendConfirmationLetterAgain
 from .views import SendMessageFromProfileView
 from .views import UserLoginView
 from .views import UserLogoutView
@@ -20,10 +21,11 @@ from .views import UserUpdateView
 app_name = 'accounts'
 
 urlpatterns = [
+    path('register/resend_activation_letter/', SendConfirmationLetterAgain.as_view(), name='resend_confirmation'),
     path('register/done/', EmailConfirmationSentView.as_view(), name='register_done'),
     path('confirm-email/<str:uidb64>/<str:token>/', UserConfirmEmailView.as_view(), name='confirm_email'),
     path('email-confirmed/', EmailConfirmedView.as_view(), name='email_confirmed'),
-    path('email-not-confirmed/', EmailNotConfirmedView.as_view, name='email_not_confirmed'),
+    path('email-not-confirmed/', EmailNotConfirmedView.as_view(), name='email_not_confirmed'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
     path('profile/', UserProfile.as_view(), name='profile'),
