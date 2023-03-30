@@ -42,3 +42,21 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['is_readed', '-created']
+
+
+class Feedback(models.Model):
+    subject = models.CharField(max_length=255, verbose_name='Letter_theme')
+    email = models.EmailField(max_length=100, verbose_name='Email')
+    content = models.TextField(max_length=500)
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Date_of_create')
+    ip_address = models.GenericIPAddressField(verbose_name='sender_IP', blank=True, null=True)
+    user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Feedback'
+        verbose_name_plural = 'Feedback'
+        ordering = ['-time_create']
+        db_table = 'app_feedback'
+
+    def __str__(self):
+        return f'You have a letter from {self.email}'

@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserChangeForm
 from django.core.exceptions import ValidationError
 from django.forms import widgets
 
-from .models import Message
+from .models import Feedback, Message
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -120,3 +120,19 @@ class SendMessageFromProfile(forms.ModelForm):
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'input'})
+
+
+class FeedbackCreateForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = [
+            'subject',
+            'email',
+            'content'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        "Обновление стилей формы"
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control', 'autocomplete': 'off'})

@@ -1,8 +1,10 @@
-from accounts.forms import ActivationLetterAgain, MessageForm, SendMessageFromProfile
+from django.contrib.messages.views import SuccessMessageMixin
+
+from accounts.forms import ActivationLetterAgain, MessageForm, SendMessageFromProfile, FeedbackCreateForm
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
-from accounts.models import Message, User
-from accounts.tasks import send_activate_email_message_task
+from accounts.models import Feedback, Message, User
+from accounts.tasks import send_activate_email_message_task, send_feedback_email_message_task
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -17,6 +19,7 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView
 from django.views.generic import UpdateView
 
+from accounts.utils import get_client_ip
 from post.models import Posts
 
 
@@ -50,6 +53,9 @@ class UserConfirmEmailView(View):
             user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
+
+        if user.is_activated:
+            return render(self.request, 'accounts/user_is_activated.html')
 
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
@@ -105,10 +111,12 @@ class SendConfirmationLetterAgain(View):
         if request.method == 'POST':
             form = ActivationLetterAgain(data=self.request.POST)
             if form.is_valid():
-                username = request.POST.get('email')
-                user = get_object_or_404(get_user_model(), email=username)
+                email = self.request.POST.get('email')
+                user = get_object_or_404(get_user_model(), email=email)
+
                 if user.is_activated:
                     return render(self.request, 'accounts/user_is_activated.html')
+
                 send_activate_email_message_task.delay(user.id)
                 return render(self.request, 'accounts/user_register_done.html')
 
@@ -308,3 +316,26 @@ class DeleteMessage(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         messages.success(self.request, self.success_message)
         return reverse('accounts:inbox')
+
+
+class FeedBackCreateView(SuccessMessageMixin, CreateView):
+    model = Feedback
+    form_class = FeedbackCreateForm
+    success_message = 'Your message have been successfully sent'
+    template_name = 'feedback/feedback.html'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.ip_address = get_client_ip(self.request)
+            if self.request.user.is_authenticated:
+                feedback.user = self.request.user
+            send_feedback_email_message_task.delay(
+                feedback.subject,
+                feedback.email,
+                feedback.content,
+                feedback.ip_address,
+                feedback.user_id
+            )
+        return super().form_valid(form)

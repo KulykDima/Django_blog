@@ -6,6 +6,7 @@ from .views import DeleteMessage
 from .views import EmailConfirmationSentView
 from .views import EmailConfirmedView
 from .views import EmailNotConfirmedView
+from .views import FeedBackCreateView
 from .views import Inbox
 from .views import IncomingMessage
 from .views import Outbox
@@ -39,4 +40,5 @@ urlpatterns = [
     path('profile/inbox/delete_message/<slug:id>', DeleteMessage.as_view(), name='delete_message'),
     path('profiles/user/<int:pk>', BloggerProfileView.as_view(), name='bloggers_profile'),
     path('profile/message/new_massage/<int:pk>', SendMessageFromProfileView.as_view(), name='send_message_to_blogger'),
+    path('feedback/', FeedBackCreateView.as_view(), name='send_feedback'),
 ]

@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 
-from .models import Message
+from .models import Feedback, Message
 from .models import User
 
 
@@ -108,3 +108,15 @@ class AdminMessage(admin.ModelAdmin):
         ('Status', {'fields': ('is_readed', )})
     )
     list_filter = (SenderFilter, MessagesFilter)
+
+
+@admin.register(Feedback)
+class AdminFeedBack(admin.ModelAdmin):
+    list_display = ('email', 'ip_address', 'user')
+    readonly_fields = ('time_create',)
+    fieldsets = (
+        ('Contacts', {'fields': (('email', 'user', 'ip_address',),)}),
+        ('Subject', {'fields': ('subject', )}),
+        ('Content', {'fields': ('content',)}),
+        ('Create time', {'fields': ('time_create',)})
+    )
