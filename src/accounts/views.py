@@ -1,16 +1,17 @@
-from django.contrib.messages.views import SuccessMessageMixin
 
-from accounts.forms import ActivationLetterAgain, MessageForm, SendMessageFromProfile, FeedbackCreateForm
+from accounts.forms import ActivationLetterAgain, FeedbackCreateForm, MessageForm, SendMessageFromProfile
 from accounts.forms import UserRegisterForm
 from accounts.forms import UserUpdateForm
 from accounts.models import Feedback, Message, User
 from accounts.tasks import send_activate_email_message_task, send_feedback_email_message_task
+from accounts.utils import get_client_ip
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -19,7 +20,6 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView
 from django.views.generic import UpdateView
 
-from accounts.utils import get_client_ip
 from post.models import Posts
 
 
