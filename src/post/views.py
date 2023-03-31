@@ -245,3 +245,24 @@ class BloggerDetails(LoginRequiredMixin, DetailView):
             dislikes__author=self.kwargs['pk']).prefetch_related('dislikes')
         context['posts'] = Posts.objects.filter(author_id=self.kwargs['pk']).order_by('create_date')
         return context
+
+
+class PersonalBloggerPostsList(ListView):
+    model = Posts
+    template_name = 'bloggers/personal_blogger_list.html'
+    paginate_by = 7
+
+    def get_filter(self):
+        posts = Posts.objects.filter(author_id=self.request.user.pk).order_by('create_date')
+        filter_form = PostsFilterSet(data=self.request.GET, queryset=posts)
+
+        return filter_form
+
+    def get_queryset(self):
+        return self.get_filter().qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_filter().form
+
+        return context
