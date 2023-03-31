@@ -45,7 +45,7 @@ class UserRegisterForm(forms.ModelForm):
         email = self.cleaned_data['email']
         validate_email(email)
         email_domain = email.split('@')[1]
-        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        pattern = r"^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
         if re.match(pattern, email) is None:
             raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
         domains = ['gmail.com', 'ukr.net', 'yahoo.com']
@@ -80,7 +80,7 @@ class ActivationLetterAgain(forms.ModelForm):
         email = self.cleaned_data['email']
         validate_email(email)
         email_domain = email.split('@')[1]
-        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        pattern = r"^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
         if re.match(pattern, email) is None:
             raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
         domains = ['gmail.com', 'ukr.net', 'yahoo.com']
@@ -108,7 +108,7 @@ class UserUpdateForm(UserChangeForm):
         email = self.cleaned_data['email']
         validate_email(email)
         email_domain = email.split('@')[1]
-        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        pattern = r"^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
         if re.match(pattern, email) is None:
             raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
         domains = ['gmail.com', 'ukr.net', 'yahoo.com']
@@ -116,7 +116,6 @@ class UserUpdateForm(UserChangeForm):
             return email
         else:
             raise ValidationError(f'Email is incorrect, the domain {email_domain} is not valid')
-
 
     class Meta:
         model = get_user_model()
@@ -170,7 +169,7 @@ class FeedbackCreateForm(forms.ModelForm):
         email = self.cleaned_data['email']
         validate_email(email)
         email_domain = email.split('@')[1]
-        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        pattern = r"^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
         if re.match(pattern, email) is None:
             raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
         domains = ['gmail.com', 'ukr.net', 'yahoo.com']
