@@ -1,8 +1,11 @@
+import re
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserChangeForm
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.forms import widgets
 
 from .models import Feedback, Message
@@ -38,6 +41,19 @@ class UserRegisterForm(forms.ModelForm):
                 }
             )
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        validate_email(email)
+        email_domain = email.split('@')[1]
+        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        if re.match(pattern, email) is None:
+            raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
+        domains = ['gmail.com', 'ukr.net', 'yahoo.com']
+        if email_domain in domains:
+            return email
+        else:
+            raise ValidationError(f'Email is incorrect, the domain {email_domain} is not valid')
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password1'])
@@ -60,6 +76,19 @@ class UserRegisterForm(forms.ModelForm):
 
 
 class ActivationLetterAgain(forms.ModelForm):
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        validate_email(email)
+        email_domain = email.split('@')[1]
+        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        if re.match(pattern, email) is None:
+            raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
+        domains = ['gmail.com', 'ukr.net', 'yahoo.com']
+        if email_domain in domains:
+            return email
+        else:
+            raise ValidationError(f'Email is incorrect, the domain {email_domain} is not valid')
+
     class Meta:
         model = get_user_model()
         fields = ('email',)
@@ -74,6 +103,20 @@ class UserUpdateForm(UserChangeForm):
     avatar = forms.ImageField(required=False, widget=widgets.FileInput())
     birthday = forms.DateField(required=False, widget=widgets.DateInput(attrs={'type': 'date'}))
     email = forms.EmailField(required=True)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        validate_email(email)
+        email_domain = email.split('@')[1]
+        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        if re.match(pattern, email) is None:
+            raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
+        domains = ['gmail.com', 'ukr.net', 'yahoo.com']
+        if email_domain in domains:
+            return email
+        else:
+            raise ValidationError(f'Email is incorrect, the domain {email_domain} is not valid')
+
 
     class Meta:
         model = get_user_model()
@@ -123,6 +166,19 @@ class SendMessageFromProfile(forms.ModelForm):
 
 
 class FeedbackCreateForm(forms.ModelForm):
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        validate_email(email)
+        email_domain = email.split('@')[1]
+        pattern = "^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+        if re.match(pattern, email) is None:
+            raise ValidationError(f'Email is incorrect, the domain {email} is not valid')
+        domains = ['gmail.com', 'ukr.net', 'yahoo.com']
+        if email_domain in domains:
+            return email
+        else:
+            raise ValidationError(f'Email is incorrect, the domain {email_domain} is not valid')
+
     class Meta:
         model = Feedback
         fields = [
