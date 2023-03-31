@@ -8,6 +8,7 @@ from post.views import BloggerDetails
 from post.views import CreatePost
 from post.views import DeletePost
 from post.views import ListOfBloggers
+from post.views import PersonalBloggerPostsList
 from post.views import PostDetail
 from post.views import PostUpdate
 from post.views import PostsList
@@ -22,8 +23,10 @@ class TestUrls(SimpleTestCase):
 
     def test_bloggers_list_resolves(self):
         url = reverse('posts:blogger_list')
+        url_2 = reverse('posts:personal_blog')
 
         self.assertEqual(resolve(url).func.view_class, ListOfBloggers)
+        self.assertEqual(resolve(url_2).func.view_class, PersonalBloggerPostsList)
 
     def test_create_post_resolves(self):
         url = reverse('posts:create')

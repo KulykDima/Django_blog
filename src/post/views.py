@@ -247,7 +247,7 @@ class BloggerDetails(LoginRequiredMixin, DetailView):
         return context
 
 
-class PersonalBloggerPostsList(ListView):
+class PersonalBloggerPostsList(LoginRequiredMixin, ListView):
     model = Posts
     template_name = 'bloggers/personal_blogger_list.html'
     paginate_by = 7
