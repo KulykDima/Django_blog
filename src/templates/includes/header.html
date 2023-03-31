@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'index' %}"><img src="{% static 'message/img/home_icon.png' %}" title="Home"></a>
         </li>
           <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="{% url 'task_home' %}">Tasks</a>
@@ -22,7 +22,6 @@
             <li><a class="dropdown-item" href="{% url 'posts:create' %}">Create a Post</a></li>
 
               <li><a class="dropdown-item" href="{% url 'posts:blogger_list' %}">Our bloggers</a></li>
-              <li><a class="dropdown-item" href="{% url 'accounts:send_feedback' %}">FeedBack</a></li>
           </ul>
       </ul>
 {#      <form class="d-flex" role="search">#}
@@ -38,6 +37,7 @@
           <ul class="dropdown-menu">
               {% if user.is_authenticated %}
                   <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+                  <li><a class="dropdown-item" href="{% url 'posts:personal_blog' %}">My Blog</a></li>
                   <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
                    <li><a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a></li>
@@ -50,6 +50,9 @@
              <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'accounts:inbox' %}"><img src="{% static 'message/img/84139.png' %}"></a>
         </li> {% endif %}
+            <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'accounts:send_feedback' %}"><img src="{% static 'message/img/support_icon.png' %}" height="25" width="25" title="Support"></a>
+        </li>
         </div>
     </div>
   </div>

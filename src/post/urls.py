@@ -6,6 +6,7 @@ from post.views import BloggerDetails
 from post.views import CreatePost
 from post.views import DeletePost
 from post.views import ListOfBloggers
+from post.views import PersonalBloggerPostsList
 from post.views import PostDetail
 from post.views import PostUpdate
 from post.views import PostsList
@@ -22,4 +23,5 @@ urlpatterns = [
     path('update/<uuid:uuid>', PostUpdate.as_view(), name='update'),
     path('bloggers/', ListOfBloggers.as_view(), name='blogger_list'),
     path('bloggers/blogger/<int:pk>', BloggerDetails.as_view(), name='blogger_detail'),
+    path('blogger/post_list/', PersonalBloggerPostsList.as_view(), name='personal_blog'),
 ]
