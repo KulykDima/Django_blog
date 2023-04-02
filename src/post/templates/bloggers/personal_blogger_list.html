@@ -51,7 +51,7 @@
             <tbody>
             {% for post in object_list %}
                 <tr>
-                    <td>{{ page_obj.start_index|add:forloop.counter1 }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ post.title }}</td>
                     <td>{{ post.comments.count }}</td>
                     <td>   <form method="post" action="{% url 'posts:like' post.pk %}">
