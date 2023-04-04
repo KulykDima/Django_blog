@@ -39,7 +39,7 @@ class TestPosts(TestCase):
 
         self.assertEqual(response.status_code, response_2.status_code, 200)
         self.assertTemplateUsed(response, 'list_of_posts.html')
-        self.assertTemplateUsed(response_2, 'bloggers/personal_blogger_list.html')
+        self.assertTemplateUsed(response_2, 'bloggers/personal_blog.html')
 
     def test_create_post_view(self):
         login = self.client.login(username='Dima', password='1234Qwerty')   # noqa

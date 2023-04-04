@@ -56,7 +56,7 @@
                     <td>{{ post.author }}</td>
                     <td>   <form method="post" action="{% url 'posts:like' post.pk %}">
               {% csrf_token %}
-              <div >
+              <div>
                   <input type="hidden" name="text" value="{{ request.path }}">
                   <button style="background: transparent; border: none; box-shadow: none;" type="submit" data-filter-title="Like">
                       <img src="{% static 'images/like.png' %}">

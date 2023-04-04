@@ -249,11 +249,11 @@ class BloggerDetails(LoginRequiredMixin, DetailView):
 
 class PersonalBloggerPostsList(LoginRequiredMixin, ListView):
     model = Posts
-    template_name = 'bloggers/personal_blogger_list.html'
-    paginate_by = 7
+    template_name = 'bloggers/personal_blog.html'
+    paginate_by = 10
 
     def get_filter(self):
-        posts = Posts.objects.filter(author_id=self.request.user.pk).order_by('create_date')
+        posts = Posts.objects.filter(author_id=self.request.user.pk)
         filter_form = PostsFilterSet(data=self.request.GET, queryset=posts)
 
         return filter_form
