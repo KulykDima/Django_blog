@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_filters %}
+
+{% block title %}
+        My Blog
+{% endblock %}
+
+{% block content %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static 'css/personal_blog.css' %}" />
+		<noscript><link rel="stylesheet" href="{% static 'css/noscript.css' %}" /></noscript>
+	<body class="is-preload">
+
+				<!-- Wrapper -->
+					<section id="wrapper">
+
+						<!-- Posts list -->
+							<section id="four" class="wrapper alt style1">
+								<div class="inner">
+									<h2 class="major">My Blog list</h2>
+									<p>Here you can see all the posts that you have written during this whole time.</p>
+									<section class="features">
+                                    {% if object_list %}
+                                                    {% for post in object_list %}
+										<article>
+											<a href="#" class="image"><img src="http://blog.webnode.com/wp-content/uploads/2016/10/Blog-intro.jpg" alt="" /></a>
+											<h3 class="major">{{ post.title }}</h3>
+											<p>{{ post.text|slice:":40" }}</p>
+											<a href="{% url 'posts:detail' uuid=post.uuid %}" class="special">Details</a>
+                                            <div><button class="inline-buttons" style="background: transparent; border: none; box-shadow: none;" type="submit" data-filter-title="Like">
+                                                <img src="{% static 'images/like.png' %}">
+                                                <span>{{ post.like.all.count }}</span>
+                                                    </button>
+                                                <button class="inline-buttons" style="background: transparent; border: none; box-shadow: none;" type="submit">
+                                                <img src="{% static 'images/dislike.png' %}">
+                                                <span>{{ post.dislike.all.count }}</span>
+                                                </button>
+                                                <button class="inline-buttons" style="background: transparent; border: none; box-shadow: none;" type="submit">
+                                                <img src="{% static 'message/img/84139.png' %}">
+                                                <span>{{ post.comments.all.count }}</span>
+                                                </button>
+                                            </div>
+										</article>
+                                        {% endfor %}
+
+                                    </section>
+                                </div>
+                            {% else %}
+                                        <article>
+											<a href="#" class="image"><img src="http://blog.webnode.com/wp-content/uploads/2016/10/Blog-intro.jpg" alt="" /></a>
+											<p>You didn't write any post yet</p>
+											<a href="{% url 'posts:create' %}" class="special">Create first post!</a>
+										</article>
+                            {% endif %}
+							</section>
+
+					</section>
+			</div>
+	</body>
+{% endblock %}

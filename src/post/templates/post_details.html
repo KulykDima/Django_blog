@@ -3,14 +3,14 @@
 {% load static %}
 
 {% block title %}
-    Details of exam
+    Details of post
 {% endblock %}
 
 {% block header %}
     {{ posts.title }}
     <style>
 
-   header, footer {
+   .comments header, footer {
     padding: 2px;
     color: white;
     background-color: black;
@@ -28,16 +28,21 @@
     text-decoration: none;
    }
 
-   article {
+   .comment article {
     margin-left: 170px;
     border-left: 1px solid gray;
     padding: 1em;
     overflow: hidden;
    }
+
+
   </style>
 {% endblock %}
 
 {% block content %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static 'css/personal_blog.css' %}" />
+		<noscript><link rel="stylesheet" href="{% static 'css/noscript.css' %}" /></noscript>
     <link rel="stylesheet" type="text/css" href="{% static 'css/blog_page.css' %}">
                         <div class="container">
     <div class="post">
@@ -70,9 +75,7 @@
                 <a class="btn btn-outline-primary m-2"
                            href="{% url 'posts:delete_post' uuid=posts.uuid %}">Delete</a>
             </form>
-        </div>
-
-  <div class="comments">
+         <div>
      {% if new_comment %}
     <h2>Your comment has been added.</h2>
     {% else %}
@@ -80,7 +83,8 @@
     <form method="post" action="{% url 'posts:detail' uuid=posts.uuid %}">
         {{ comment_form.as_p }}
         {% csrf_token %}
-        <p><input class="btn btn-outline-success m-7" type="submit" value="Add comment"></p>
+{#        <button class="btn btn-outline-success m-2" type="submit" value="Add comment">Add comment</button>#}
+        <button type="submit" value="Add comment"><a class="btn btn-outline-success m-2" type="submit">Add comment</a></button>
     </form>
     {% endif %}
     {% for comment in comments %}
@@ -93,7 +97,7 @@
     <p>{{ comment.body|linebreaks }}</p>
    </article>
 
-   <footer></footer>
+   <footer class="comments"></footer>
         {% empty %}
     <p>There are no comments yet.</p>
         {% endfor %}
@@ -104,3 +108,5 @@
     {% endif %}
   </div>
 {% endblock %}
+        </div>
+
